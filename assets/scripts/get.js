@@ -61,6 +61,7 @@ var Content=function(options) {
   };
 
   this.dl_done=function(data) {
+    async_loaded("get");
     var that=get_queue_current(); // we better be in a queue
     if(!that) {
       log("OHSHITSHITSHIT!",LOG_FATAL);
@@ -75,6 +76,7 @@ var Content=function(options) {
   };
 
   this.dl_fail=function(d,error) {
+    async_loaded("get");
     var that=get_queue_current(); // we better be in a queue
     if(!that) {
       log("OHSHITSHITSHIT!",LOG_FATAL);
@@ -96,6 +98,7 @@ var Content=function(options) {
   };
 
   this.get=function() {
+    async("get");
     this.tries+=1;
     var that=this;
     this.status="download";
