@@ -1,10 +1,8 @@
 
-function canvas_init() {
+function canvas_init_pre() {
   prop.canvas={};
 
   prop.canvas.contexts={};
-
-//  canvas_add("overlay");
 
   // resize canvas to fit window?
   prop.canvas.resize=false;
@@ -12,8 +10,10 @@ function canvas_init() {
     height:480,
     width:640
   };
-  
-  canvas_resize();
+}
+
+function canvas_init() {
+//  canvas_add("overlay");
 }
 
 function canvas_resize() {

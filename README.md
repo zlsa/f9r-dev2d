@@ -41,7 +41,7 @@ module has called `module_update_post()`.
 ## `FRAME_DELAY`
 
 The property `prop.time.fps` is averaged over this many seconds; the
-higher `FRAME_DELAY` is, the less framerate spikes will be visible.
+higher `FRAME_DELAY` is, the less frame rate spikes will be visible.
 
 ## `RELEASE`
 
@@ -133,3 +133,49 @@ If you have a module that needs to have some stuff done asynchronously
   is finished). When all asynchronous functions have called
   `async_loaded()` for each `async()` call, the `module_ready()`
   callback is issued.
+
+# Demo modules
+
+## `get`
+
+The `get` module is used to get files via AJAX. Just create a new
+class of type `Content()` (e.g. `new Content(options)`). The single
+argument `options` expects a dictionary with the following keys:
+
+* `url`: the URL to download the asset from
+* `callback`: a function to call when the download is finished. Do not
+  call `async_loaded()` within the callback for the content; `async()`
+  and `async_loaded()` are automatically called by the `Content()`
+  class.
+* `type`: the type of file. Must be one of:
+  * `json` for a JSON file (automatically parsed)
+  * `string` for a plain-text file
+  * `image` for an image format supported by the `<img />` tag
+  * `audio` for an audio format supported by the `<audio />` tag
+* `that`: a variable which the callback will see as `this`
+* `payload`: anything. The callback will get `payload` as an argument.
+
+The `callback` should be a function with the following arguments:
+
+* `status` (either `"ok"` or `"fail"`)
+* `data` the data, in the appropriate type; if the `type` was `image`,
+  then `data` will be an `Image()`.
+* `payload` is the optional payload, given as an argument to `Content()`.
+
+# License
+
+CC0. Use it, abuse it.
+
+Also licensed under the WTFPL or, at your option, you can pay $2499
+per month for 24/7 support.
+
+## Exceptions
+
+The following files are NOT CC0:
+
+* [`fiber.min.js`](https://github.com/linkedin/Fiber) is licensed
+  under the Apache license. Thanks, LinkedIn! (Boy, I never thought
+  I'd say _that_.)
+* [`jquery.min.js`](http://jquery.com/) is licensed under the MIT
+  license. Thanks, John Resig and the jQuery team. Even though it's
+  bloated, I love you, jQuery.

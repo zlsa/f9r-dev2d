@@ -5,6 +5,7 @@
 var MODULES=[
   "-util",
   "-animation",
+//  "get",
 //  "canvas",
 //  "load"
 ];
