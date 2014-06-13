@@ -116,4 +116,20 @@ init and also every time the window changes size.
 
 When `UPDATE` is `true`, the functions `module_update_pre()`,
 `module_update()`, and `module_update_post()` will be called in that
-order every frame.
+order every frame (generally 60 frames per second).
+
+## Asynchronous functions
+
+If you have a module that needs to have some stuff done asynchronously
+(for example, AJAX downloads), you can use the asynchronous functions.
+
+* `async(name)` where `name` is an identifier for debugging and not
+  currently used; it should usually be the modules' name. `async()`
+  increments a number associated with the `name`.
+* `async_loaded(name)` where `name` is still an identifier. It
+  decrements the number incremented by `async()`; if the number is
+  zero, that `name` is done. `async_loaded()` should be called inside
+  of the AJAX callback (so it's only called when the asynchronous part
+  is finished). When all asynchronous functions have called
+  `async_loaded()` for each `async()` call, the `module_ready()`
+  callback is issued.
