@@ -134,7 +134,7 @@ If you have a module that needs to have some stuff done asynchronously
   `async_loaded()` for each `async()` call, the `module_ready()`
   callback is issued.
 
-# Demo modules
+# Included modules
 
 ## `get`
 
