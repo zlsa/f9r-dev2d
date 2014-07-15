@@ -13,7 +13,9 @@ var Craft=function(options) {
     this.crashed=false;
 
     this.mass=18000;
-    this.fuel=130000;
+    this.mass=21000;
+    this.fuel=80000;
+//    this.fuel=350000;
 
     this.throttle=0;
 
@@ -35,12 +37,12 @@ var Craft=function(options) {
   this.thrust_peak=[6540,7160];
 
   // kg of fuel per second of a single engine at sea level and in a vacuum
-  this.fuel_flow=[150*8,135*8];
+  this.fuel_flow=[1500,1350];
   
   // max engine vector
   this.vector_max=radians(5);
 
-  this.min_throttle=0.0;
+  this.min_throttle=0.7;
   this.max_throttle=1.03;
 
   this.thrust=0;
@@ -110,6 +112,7 @@ var Craft=function(options) {
   };
 
   this.updateThrust=function() {
+    this.thrust_vector=clamp(-1,this.thrust_vector,1);
     var throttle=trange(0,this.throttle,1,this.min_throttle,this.max_throttle);
     if(this.throttle <= 0.01) throttle=0;
     this.thrust=trange(0,this.getAltitude(),100000,this.thrust_peak[0],this.thrust_peak[1])*this.engine_number*throttle;
@@ -129,7 +132,7 @@ var Craft=function(options) {
   this.updateCrash=function() {
     if(time()-this.start < 2) return; // do not crash in the first few seconds
     if(this.rocket_body.overlaps(prop.physics.ground_body)) { // touching ground
-      if(distance([0,0],this.rocket_body.velocity) > 3) {
+      if(distance([0,0],this.rocket_body.velocity) > 2) {
         this.crashed=true;
       }
       var angle=normalizeAngle(this.rocket_body.angle+Math.PI);

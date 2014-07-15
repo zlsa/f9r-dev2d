@@ -95,7 +95,7 @@ function canvas_draw_pad(cc,pad) {
   else if(pad.material == "asphalt") cc.fillStyle="#999";
   cc.font="14px bold monospace, 'Ubuntu Mono'";
   cc.textAlign="center";
-  cc.fillText(pad.name,0,15);
+  cc.fillText(pad.name,0,20-m_to_pixel(pad.height));
 }
 
 function canvas_draw_pads(cc) {
@@ -186,7 +186,7 @@ function canvas_draw_craft(cc) {
   cc.beginPath()
   cc.lineTo(0,h/2);
 
-  cc.strokeStyle="#f82";
+  cc.strokeStyle="#f84";
   cc.lineWidth=4;
   cc.lineCap="round";
 
@@ -195,14 +195,15 @@ function canvas_draw_craft(cc) {
   if(prop.craft.fuel <= 0) throttle=0;
   if(prop.craft.throttle <= 0.01) throttle=0;
   var s=m_to_pixel(10)*throttle;
+
   var force=[-sin(v)*s,cos(v)*s];
-  
-  if(prop.craft.engine_number == 3 || prop.craft.engine_number == 1) {
+
+  if(prop.craft.engine_number >= 3 || prop.craft.engine_number == 1) {
     cc.moveTo(0,h/2);
     cc.lineTo(force[0],h/2+force[1]);
   }
 
-  if(prop.craft.engine_number == 3 || prop.craft.engine_number == 2) {
+  if(prop.craft.engine_number >= 3 || prop.craft.engine_number == 2) {
     var e=m_to_pixel(1);
     cc.moveTo(-e,h/2);
     cc.lineTo(-e+force[0],h/2+force[1]);
@@ -212,6 +213,31 @@ function canvas_draw_craft(cc) {
   }
 
   cc.stroke();
+
+  cc.strokeStyle="#fff";
+  cc.lineWidth=2;
+
+  cc.beginPath();
+  s=m_to_pixel(crange(0,throttle,1,10,5))*throttle;
+  force=[-sin(v)*s,cos(v)*s];
+
+  if(prop.craft.engine_number >= 3 || prop.craft.engine_number == 1) {
+    cc.moveTo(0,h/2);
+    cc.lineTo(force[0],h/2+(force[1]));
+  }
+
+  if(prop.craft.engine_number >= 3 || prop.craft.engine_number == 2) {
+    var e=m_to_pixel(1);
+    cc.moveTo(-e,h/2);
+    cc.lineTo(-e+force[0],h/2+force[1]);
+
+    cc.moveTo(e,h/2);
+    cc.lineTo(e+force[0],h/2+force[1]);
+  }
+
+
+  cc.stroke();
+
   cc.strokeStyle = "#666";
 
   cc.lineCap="butt";
@@ -264,8 +290,10 @@ function canvas_draw_hud(cc) {
   cc.fillRect(prop.canvas.size.width/2-300,9,600,30);
   cc.fillRect(0,prop.canvas.size.height-37,prop.canvas.size.width,30);
   
-  if(prop.craft.crashed)
+  if(prop.craft.crashed) {
+    cc.fillStyle="rgba(191,32,0,0.8)";
     cc.fillRect(prop.canvas.size.width/2-300,prop.canvas.size.height/2-15,600,30);
+  }
   cc.fillStyle="#fff";
 
   // altitude

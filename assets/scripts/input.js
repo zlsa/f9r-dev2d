@@ -24,6 +24,7 @@ function input_init() {
     1: 49,
     2: 50,
     3: 51,
+    9: 57,
   };
 }
 
@@ -46,10 +47,10 @@ function input_keyup(keycode) {
   }
   if(keycode == prop.input.keysym["1"]) {
     prop.craft.engine_number=1;
-  } else if(keycode == prop.input.keysym["2"]) {
-    prop.craft.engine_number=2;
   } else if(keycode == prop.input.keysym["3"]) {
     prop.craft.engine_number=3;
+  } else if(keycode == prop.input.keysym["9"]) {
+//    prop.craft.engine_number=9;
   }
 }
 
@@ -67,10 +68,16 @@ function input_update_pre() {
   } else {
     prop.craft.autopilot.disabled=true;
   }
+  var t=2; // the number of seconds it takes to vector left to right
+  t*=2;
   if(prop.input.keys[prop.input.keysym.left]) {
-    prop.craft.thrust_vector=-1;
+    prop.craft.thrust_vector-=t*delta();
   } else if(prop.input.keys[prop.input.keysym.right]) {
-    prop.craft.thrust_vector=1;
+    prop.craft.thrust_vector+=t*delta();
+  } else if(prop.craft.thrust_vector > 0.1){
+    prop.craft.thrust_vector-=t*delta();
+  } else if(prop.craft.thrust_vector < -0.1){
+    prop.craft.thrust_vector+=t*delta();
   } else {
     prop.craft.thrust_vector=0;
   }
