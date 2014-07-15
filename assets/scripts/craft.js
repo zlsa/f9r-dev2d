@@ -6,7 +6,7 @@ var Craft=function(options) {
   this.autopilot={
     enabled: false
   };
-
+  
   this.reset=function() {
     this.start=time()
 

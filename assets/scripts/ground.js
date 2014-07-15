@@ -1,10 +1,12 @@
 
 var Pad=function(options) {
+  this.name=null;
   this.x=0;
   this.width=0;
   this.height=1;
   this.material="concrete";
 
+  if("name" in options) this.name=options.name;
   if("x" in options) this.x=options.x;
   if("width" in options) this.width=options.width;
   if("height" in options) this.height=options.height;
@@ -28,33 +30,38 @@ function ground_init() {
   ground_add_pad({
     x:0,
     width:100,
-    height: 1
+    height: 1,
+    name:"start"
   });
 
   ground_add_pad({
     x:200,
     width:200,
     height: 5,
-    material:"asphalt"
+    material:"asphalt",
+    name:"hop 1"
   });
 
   ground_add_pad({
     x:-400,
     width:100,
-    height: 1
+    height: 1,
+    name:"the witch of the west lives here"
   });
 
   ground_add_pad({
     x:400,
     width:30,
-    height: 50
+    height: 50,
+    name:"precision landings"
   });
 
   ground_add_pad({
     x:600,
     width:30,
     height: 1,
-    material: "asphalt"
+    material: "asphalt",
+    name:"long-distance"
   });
 
 }

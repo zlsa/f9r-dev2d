@@ -16,6 +16,7 @@ function canvas_init() {
   canvas_add("background");
   canvas_add("grid");
   canvas_add("ground");
+  canvas_add("pads");
   canvas_add("craft");
   canvas_add("hud");
 }
@@ -81,15 +82,30 @@ function canvas_draw_ground(cc) {
   cc.fillRect(0,Math.max(prop.canvas.size.height/2+m_to_pixel(3)+prop.ui.pan[1],0),
               prop.canvas.size.width,prop.canvas.size.height);
 
+}
+
+function canvas_draw_pad(cc,pad) {
+  if(pad.material == "concrete") cc.fillStyle="#888";
+  else if(pad.material == "asphalt") cc.fillStyle="#333";
+  cc.fillRect(-m_to_pixel(pad.width/2),
+              -m_to_pixel(pad.height),
+              m_to_pixel(pad.width),
+              m_to_pixel(5+pad.height));
+  if(pad.material == "concrete") cc.fillStyle="#222";
+  else if(pad.material == "asphalt") cc.fillStyle="#999";
+  cc.font="14px bold monospace, 'Ubuntu Mono'";
+  cc.textAlign="center";
+  cc.fillText(pad.name,0,15);
+}
+
+function canvas_draw_pads(cc) {
   
   for(var i=0;i<prop.ground.pads.length;i++) {
     var pad=prop.ground.pads[i];
-    if(pad.material == "concrete") cc.fillStyle="#888";
-    else if(pad.material == "asphalt") cc.fillStyle="#333";
-    cc.fillRect(prop.canvas.size.width/2+prop.ui.pan[0]+m_to_pixel(pad.x-pad.width/2),
-                prop.canvas.size.height/2+prop.ui.pan[1]-m_to_pixel(pad.height),
-                m_to_pixel(pad.width),
-                m_to_pixel(5+pad.height));
+    cc.save();
+    cc.translate(prop.canvas.size.width/2+prop.ui.pan[0]+m_to_pixel(pad.x),prop.canvas.size.height/2+prop.ui.pan[1]);
+    canvas_draw_pad(cc,pad);
+    cc.restore();
   }
 }
 
@@ -242,14 +258,14 @@ function canvas_draw_craft(cc) {
 }
 
 function canvas_draw_hud(cc) {
-  cc.font="14px bold monospace, monoOne";
+  cc.font="14px bold monospace, 'Ubuntu Mono'";
   cc.textAlign="center";
   cc.fillStyle="rgba(0,0,0,0.4)";
   cc.fillRect(prop.canvas.size.width/2-300,9,600,30);
   cc.fillRect(0,prop.canvas.size.height-37,prop.canvas.size.width,30);
   
   if(prop.craft.crashed)
-    cc.fillRect(prop.canvas.size.width/2-200,prop.canvas.size.height/2-15,400,30);
+    cc.fillRect(prop.canvas.size.width/2-300,prop.canvas.size.height/2-15,600,30);
   cc.fillStyle="#fff";
 
   // altitude
@@ -266,7 +282,7 @@ function canvas_draw_hud(cc) {
 
   // crashed
   if(prop.craft.crashed)
-    cc.fillText("you crashed. press 'r' to reset",prop.canvas.size.width/2,prop.canvas.size.height/2+5);
+    cc.fillText("you crashed a multimillion-dollar test rig. press 'r' to reset",prop.canvas.size.width/2,prop.canvas.size.height/2+5);
 
 }
 
@@ -287,6 +303,12 @@ function canvas_update_post() {
   cc.save();
   canvas_clear(cc);
   canvas_draw_ground(cc);
+  cc.restore();
+
+  var cc=canvas_get("pads");
+  cc.save();
+  canvas_clear(cc);
+  canvas_draw_pads(cc);
   cc.restore();
 
   var cc=canvas_get("craft");
