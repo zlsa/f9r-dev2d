@@ -3,7 +3,7 @@ function physics_init_pre() {
   prop.physics={};
 
   prop.physics.world=new p2.World({
-    gravity:[0, -9.82*0.005]
+    gravity:[0, -9.82]
   });
 
   prop.physics.ground_body=new p2.Body({ mass: 0 });

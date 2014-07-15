@@ -17,18 +17,23 @@ var Craft=function(options) {
 
     this.engine_number=3;
 
-    this.rocket_body.position=[0,26.1];
+    this.rocket_body.position=[0,26.05];
     this.rocket_body.velocity=[0,0];
     this.rocket_body.angle=0;
     this.rocket_body.angularVelocity=0;
 
+//    var offset=trange(0,this.fuel,this.full_fuel,this.mass_distribution[0],this.mass_distribution[1]);
+//    this.rocket_body.position[1]=26.1-offset;
+
+    this.update();
   };
 
+  this.full_fuel=350000;
   // kg of thrust
-  this.thrust_peak=[65.40*0.4,71.60*0.4];
+  this.thrust_peak=[6540,7160];
 
   // kg of fuel per second of a single engine at sea level and in a vacuum
-  this.fuel_flow=[150*15,135*15];
+  this.fuel_flow=[150*8,135*8];
   
   // max engine vector
   this.vector_max=radians(5);
@@ -46,17 +51,21 @@ var Craft=function(options) {
     angle: 0.01,
     mass: 1
   });
-
+  
 //  this.rocket_body.damping=0.02;
 //  this.rocket_body.fixedRotation=true;
 
   this.rocket_shape=new p2.Rectangle(3.66, 42);
   this.rocket_body.addShape(this.rocket_shape);
 
+  this.mass_distribution=[-2,-20];
+
+  this.leg_offset=-24;
+
   this.right_leg_shape=new p2.Rectangle(2, 0.5);
   this.left_leg_shape=new p2.Rectangle(2, 0.5);
-  this.rocket_body.addShape(this.right_leg_shape,[-6.5,-24]);
-  this.rocket_body.addShape(this.left_leg_shape,[6.5,-24]);
+  this.rocket_body.addShape(this.right_leg_shape,[-6.5,this.leg_offset]);
+  this.rocket_body.addShape(this.left_leg_shape,[6.5,this.leg_offset]);
 
   this.gearDown=true;
 //  this.setGear();
@@ -69,6 +78,14 @@ var Craft=function(options) {
 
   this.updateMass=function() {
     this.rocket_body.mass=(this.mass+this.fuel)*0.01;
+//    var offset=trange(0,this.fuel,this.full_fuel,this.mass_distribution[0],this.mass_distribution[1]);
+//    this.rocket_body.shapeOffsets[0][1]=offset;
+    for(var i=1;i<this.rocket_body.shapeOffsets.length;i++) {
+//      this.rocket_body.shapeOffsets[i][1]=this.leg_offset+offset;
+    }
+    this.rocket_body.updateMassProperties();
+    this.rocket_body.damping=crange(0,this.getAltitude(),100000,0.1,0.0);
+    this.rocket_body.angular_damping=crange(0,this.getAltitude(),100000,0.1,0.0);
   };
   
   this.getAltitude=function() {
@@ -112,7 +129,7 @@ var Craft=function(options) {
 
   this.updateCrash=function() {
     if(this.rocket_body.overlaps(prop.physics.ground_body)) { // touching ground
-      if(distance([0,0],this.rocket_body.velocity) > 6) {
+      if(distance([0,0],this.rocket_body.velocity) > 3) {
         this.crashed=true;
       }
       var angle=normalizeAngle(this.rocket_body.angle+Math.PI);

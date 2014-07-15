@@ -49,7 +49,7 @@ function canvas_clear(cc) {
 // background
 
 function canvas_draw_background(cc) {
-  var gradient=cc.createLinearGradient(0,-km_to_pixel(10)+prop.ui.pan[1],0,prop.ui.pan[1]);
+  var gradient=cc.createLinearGradient(0,-km_to_pixel(100)+prop.ui.pan[1],0,prop.ui.pan[1]);
   gradient.addColorStop(0,"#000");
   gradient.addColorStop(0.96,"#3288C9");
   gradient.addColorStop(0.99,"#def");
@@ -229,14 +229,14 @@ function canvas_draw_craft(cc) {
 }
 
 function canvas_draw_hud(cc) {
-  cc.font="20px bold monospace, monoOne";
+  cc.font="14px bold monospace, monoOne";
   cc.textAlign="center";
-  cc.fillStyle="rgba(0,0,0,0.5)";
-  cc.fillRect(prop.canvas.size.width/2-300,3,600,40);
-  cc.fillRect(0,prop.canvas.size.height-45,prop.canvas.size.width,40);
+  cc.fillStyle="rgba(0,0,0,0.4)";
+  cc.fillRect(prop.canvas.size.width/2-300,9,600,30);
+  cc.fillRect(0,prop.canvas.size.height-37,prop.canvas.size.width,30);
   
   if(prop.craft.crashed)
-    cc.fillRect(prop.canvas.size.width/2-300,prop.canvas.size.height/2-20,600,40);
+    cc.fillRect(prop.canvas.size.width/2-200,prop.canvas.size.height/2-15,400,30);
   cc.fillStyle="#fff";
 
   // altitude
@@ -249,7 +249,7 @@ function canvas_draw_hud(cc) {
   cc.fillText("h/s "+(-prop.craft.rocket_body.velocity[0]+0.1).toFixed(0)+"m/s",prop.canvas.size.width/2+200,30);
 
   // help
-  cc.fillText("keys: 'r' to reset, 'x' to kill throttle, up and down for throttle, left and right for thrust vector",prop.canvas.size.width/2,prop.canvas.size.height-17);
+  cc.fillText("keys: throttle: up, down, and 'x'; vector: left, right; engine number: '1', '2', and '3'",prop.canvas.size.width/2,prop.canvas.size.height-17);
 
   // crashed
   if(prop.craft.crashed)
