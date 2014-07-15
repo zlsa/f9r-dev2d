@@ -97,7 +97,6 @@ function canvas_draw_ground(cc) {
 
 function canvas_draw_craft(cc) {
   cc.fillStyle="#fff";
-  if(prop.craft.crashed) cc.fillStyle="#f88";
   cc.strokeStyle="#222";
 
   var w=m_to_pixel(3.66);
@@ -119,6 +118,40 @@ function canvas_draw_craft(cc) {
   cc.lineTo(0,    -h/2);
   cc.fill();
 
+  cc.fillStyle="#468";
+
+  var f=trange(0,prop.craft.fuel,385000,0,m_to_pixel(40));
+  var o=m_to_pixel(-2);
+  cc.beginPath();
+  cc.moveTo(w/2,  h/2-f+o);
+  cc.lineTo(w/2,  h/2+o);
+  cc.lineTo(-w/2, h/2+o);
+  cc.lineTo(-w/2, h/2-f+o);
+  cc.fill();
+
+  if(prop.craft.crashed) {
+    cc.fillStyle="#f88";
+
+    cc.beginPath();
+    cc.moveTo(0,    -h/2);
+    cc.lineTo(w/2,  -h/2+nosecone_height);
+    cc.lineTo(w/2,   h/2);
+    cc.lineTo(-w/2,  h/2);
+    cc.lineTo(-w/2, -h/2+nosecone_height);
+    cc.lineTo(0,    -h/2);
+    cc.fill();
+
+  }
+
+  cc.beginPath();
+  cc.moveTo(0,    -h/2);
+  cc.lineTo(w/2,  -h/2+nosecone_height);
+  cc.lineTo(w/2,   h/2);
+  cc.lineTo(-w/2,  h/2);
+  cc.lineTo(-w/2, -h/2+nosecone_height);
+  cc.lineTo(0,    -h/2);
+  cc.stroke();
+
   cc.fillStyle="rgba(0,0,0,0.3)";
 
   var s=w/2/3;
@@ -131,26 +164,6 @@ function canvas_draw_craft(cc) {
   cc.lineTo(s,   -h/2+nosecone_height);
   cc.lineTo(0,   -h/2);
   cc.fill();
-
-  cc.fillStyle="#468";
-
-  var f=trange(0,prop.craft.fuel,385000,0,m_to_pixel(40));
-  var o=m_to_pixel(-2);
-  cc.beginPath();
-  cc.moveTo(w/2,  h/2-f+o);
-  cc.lineTo(w/2,  h/2+o);
-  cc.lineTo(-w/2, h/2+o);
-  cc.lineTo(-w/2, h/2-f+o);
-  cc.fill();
-
-  cc.beginPath();
-  cc.moveTo(0,    -h/2);
-  cc.lineTo(w/2,  -h/2+nosecone_height);
-  cc.lineTo(w/2,   h/2);
-  cc.lineTo(-w/2,  h/2);
-  cc.lineTo(-w/2, -h/2+nosecone_height);
-  cc.lineTo(0,    -h/2);
-  cc.stroke();
 
   cc.lineWidth=2;
   cc.beginPath()
@@ -203,7 +216,6 @@ function canvas_draw_craft(cc) {
   cc.lineTo(e+force[0],h/2+force[1]);
 
   cc.stroke();
-
 
   cc.fillStyle="#333";
   if(prop.craft.gearDown) {
