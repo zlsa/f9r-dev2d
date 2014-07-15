@@ -13,15 +13,16 @@ var Craft=function(options) {
     this.start=time()
 
     this.crashed=false;
+    this.crash_time=null;
 
     this.mass=18000;
-    this.mass=21000;
-    this.fuel=80000;
+    this.mass=20000;
+    this.fuel=90000;
 //    this.fuel=350000;
 
     this.throttle=0;
 
-    this.engine_number=3;
+    this.engine_number=9;
 
     this.rocket_body.position=[0,26.05];
     this.rocket_body.velocity=[0,0];
@@ -39,7 +40,7 @@ var Craft=function(options) {
   this.thrust_peak=[6540,7160];
 
   // kg of fuel per second of a single engine at sea level and in a vacuum
-  this.fuel_flow=[1500,1350];
+  this.fuel_flow=[1300,1000];
   
   // max engine vector
   this.vector_max=radians(5);
@@ -50,7 +51,7 @@ var Craft=function(options) {
   this.thrust=0;
   this.thrust_vector=0; // angle in radians
 
-  this.engine_number=3;
+  this.engine_number=9;
 
   this.rocket_body=new p2.Body({
     position: [0,30],
@@ -109,8 +110,9 @@ var Craft=function(options) {
   };
 
   this.updateFuel=function() {
+    if(this.throttle < 0.01) return;
     var single_engine_fuel_flow=trange(0,this.getAltitude(),100000,this.fuel_flow[0],this.fuel_flow[1]);
-    var fuel_flow=single_engine_fuel_flow*this.throttle*this.engine_number*delta();
+    var fuel_flow=single_engine_fuel_flow*crange(0,this.throttle,1,this.min_throttle,this.max_throttle)*this.engine_number*delta();
     this.fuel-=fuel_flow;
     this.fuel=Math.max(0,this.fuel);
   };
@@ -136,15 +138,18 @@ var Craft=function(options) {
 
   this.updateCrash=function() {
     if(time()-this.start < 2) return; // do not crash in the first few seconds
-    if(this.rocket_body.overlaps(prop.physics.ground_body)) { // touching ground
-      if(distance([0,0],this.rocket_body.velocity) > 2) {
-        this.crashed=true;
+    if(!this.crashed) {
+      if(this.rocket_body.overlaps(prop.physics.ground_body)) { // touching ground
+        if(distance([0,0],this.rocket_body.velocity) > 2) {
+          this.crashed=true;
+        }
+        var angle=normalizeAngle(this.rocket_body.angle+Math.PI);
+        if(Math.abs(angle-Math.PI) > radians(10)) this.crashed=true;
       }
-      var angle=normalizeAngle(this.rocket_body.angle+Math.PI);
-      if(Math.abs(angle-Math.PI) > radians(10)) this.crashed=true;
-    }
-    if(this.crashed) {
-      this.throttle=0;
+      if(this.crashed) {
+        this.throttle=0;
+        this.crash_time=time();
+      }
     }
   }
 

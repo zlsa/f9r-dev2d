@@ -286,6 +286,12 @@ function canvas_draw_craft(cc) {
 function canvas_draw_hud(cc) {
   cc.font="14px bold monospace, 'Ubuntu Mono'";
   cc.textAlign="center";
+  if(prop.craft.crashed) {
+    var opacity=crange(0,time()-prop.craft.crash_time,10,0,0.5);
+    cc.fillStyle="rgba(0,0,0,"+opacity+")";
+    cc.fillRect(0,0,prop.canvas.size.width,prop.canvas.size.height);
+  }
+
   cc.fillStyle="rgba(0,0,0,0.4)";
   cc.fillRect(prop.canvas.size.width/2-300,9,600,30);
   cc.fillRect(0,prop.canvas.size.height-37,prop.canvas.size.width,30);
@@ -317,37 +323,30 @@ function canvas_draw_hud(cc) {
 function canvas_update_post() {
   var cc=canvas_get("background");
   cc.save();
-  canvas_clear(cc);
   canvas_draw_background(cc);
   cc.restore();
 
-  var cc=canvas_get("grid");
+//  var cc=canvas_get("ground");
   cc.save();
-  canvas_clear(cc);
-  canvas_draw_grid(cc);
-  cc.restore();
-
-  var cc=canvas_get("ground");
-  cc.save();
-  canvas_clear(cc);
+//  canvas_clear(cc);
   canvas_draw_ground(cc);
   cc.restore();
 
-  var cc=canvas_get("pads");
+//  var cc=canvas_get("pads");
   cc.save();
-  canvas_clear(cc);
+//  canvas_clear(cc);
   canvas_draw_pads(cc);
   cc.restore();
 
-  var cc=canvas_get("craft");
+//  var cc=canvas_get("craft");
   cc.save();
-  canvas_clear(cc);
+//  canvas_clear(cc);
   canvas_draw_craft(cc);
   cc.restore();
 
-  var cc=canvas_get("hud");
+//  var cc=canvas_get("hud");
   cc.save();
-  canvas_clear(cc);
+//  canvas_clear(cc);
   canvas_draw_hud(cc);
   cc.restore();
 }
