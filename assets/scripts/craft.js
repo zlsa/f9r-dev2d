@@ -3,7 +3,7 @@ var Craft=function(options) {
   this.pos=[0,0];
   this.angle=0;
 
-  this.scenario="f9-reentry";
+  this.scenario="f9r-dev1";
 
   this.scenarios={
     "f9r-dev1": {
