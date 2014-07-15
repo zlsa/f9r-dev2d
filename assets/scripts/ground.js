@@ -34,7 +34,7 @@ function ground_init() {
   ground_add_pad({
     x:200,
     width:200,
-    height: 500,
+    height: 5,
     material:"asphalt"
   });
 
