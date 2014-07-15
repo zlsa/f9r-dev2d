@@ -13,6 +13,8 @@ per month for 24/7 support.
 
 The following files are NOT CC0:
 
+* [`p2.js`](https://github.com/schteppe/p2.js) is licensed
+  under the MIT license. Thanks!
 * [`fiber.min.js`](https://github.com/linkedin/Fiber) is licensed
   under the Apache license. Thanks, LinkedIn! (Boy, I never thought
   I'd say _that_.)
