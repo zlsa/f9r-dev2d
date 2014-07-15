@@ -5,9 +5,11 @@
 var MODULES=[
   "-util",
   "-animation",
+  "ui",
 //  "get",
   "canvas",
-  "craft"
+  "physics",
+  "craft",
 //  "load"
 ];
 
@@ -15,7 +17,7 @@ var MODULES=[
 var VERSION=[0,0,0];
 
 // are you using a main loop? (you must call update() afterward disable/reenable)
-var UPDATE=false;
+var UPDATE=true;
 
 // the framerate is updated this often (seconds)
 var FRAME_DELAY=1;
@@ -235,6 +237,7 @@ function update() {
   call_module("*","update");
   call_module("*","update_post");
   if(UPDATE)
+//    setTimeout(update,100);
     requestAnimationFrame(update);
   prop.time.frames+=1;
   prop.time.frame.count+=1;

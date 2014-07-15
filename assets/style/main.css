@@ -1,6 +1,6 @@
 
 @import "reset.css";
-/*@import "canvas.css";*/
+@import "canvas.css";
 
 html,body {
     height: 100%;
