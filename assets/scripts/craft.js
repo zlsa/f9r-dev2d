@@ -22,8 +22,8 @@ var Craft=function(options) {
     this.rocket_body.angle=0;
     this.rocket_body.angularVelocity=0;
 
-//    var offset=trange(0,this.fuel,this.full_fuel,this.mass_distribution[0],this.mass_distribution[1]);
-//    this.rocket_body.position[1]=26.1-offset;
+    this.offset=trange(0,this.fuel,this.full_fuel,this.mass_distribution[0],this.mass_distribution[1]);
+    this.rocket_body.position[1]=26.1-this.offset;
 
     this.update();
   };
@@ -52,13 +52,10 @@ var Craft=function(options) {
     mass: 1
   });
   
-//  this.rocket_body.damping=0.02;
-//  this.rocket_body.fixedRotation=true;
-
   this.rocket_shape=new p2.Rectangle(3.66, 42);
   this.rocket_body.addShape(this.rocket_shape);
 
-  this.mass_distribution=[-2,-20];
+  this.mass_distribution=[2,20];
 
   this.leg_offset=-24;
 
@@ -78,10 +75,10 @@ var Craft=function(options) {
 
   this.updateMass=function() {
     this.rocket_body.mass=(this.mass+this.fuel)*0.01;
-//    var offset=trange(0,this.fuel,this.full_fuel,this.mass_distribution[0],this.mass_distribution[1]);
-//    this.rocket_body.shapeOffsets[0][1]=offset;
+    this.offset=trange(0,this.fuel,this.full_fuel,this.mass_distribution[0],this.mass_distribution[1]);
+    this.rocket_body.shapeOffsets[0][1]=this.offset;
     for(var i=1;i<this.rocket_body.shapeOffsets.length;i++) {
-//      this.rocket_body.shapeOffsets[i][1]=this.leg_offset+offset;
+      this.rocket_body.shapeOffsets[i][1]=this.leg_offset+this.offset;
     }
     this.rocket_body.updateMassProperties();
     this.rocket_body.damping=crange(0,this.getAltitude(),100000,0.1,0.0);
@@ -89,7 +86,7 @@ var Craft=function(options) {
   };
   
   this.getAltitude=function() {
-    return this.pos[1];
+    return this.pos[1]-this.offset-8;
   };
 
   this.updateAutopilot=function() {
