@@ -7,13 +7,15 @@ var Pad=function(options) {
 
   if("x" in options) this.x=options.x;
   if("width" in options) this.width=options.width;
+  if("height" in options) this.height=options.height;
   if("material" in options) this.material=options.material;
 
   if(this.height > 0.01) {
     this.shape=new p2.Rectangle(this.width,this.height*2);
 
-    prop.physics.ground_body.addShape(this.shape,[this.x,0]);
+    prop.physics.ground_body.addShape(this.shape,[-this.x,0]);
   }
+
 };
 
 function ground_init_pre() {
@@ -25,12 +27,14 @@ function ground_init_pre() {
 function ground_init() {
   ground_add_pad({
     x:0,
-    width:100
+    width:100,
+    height: 1
   });
 
   ground_add_pad({
-    x:300,
+    x:200,
     width:200,
+    height: 2000,
     material:"asphalt"
   });
 }

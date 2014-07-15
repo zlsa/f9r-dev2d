@@ -5,7 +5,7 @@ function ui_init_pre() {
   prop.ui.pan=[0,0]; // pan in pixels
   // if pan is [100,0] you are looking to the right
   // if [0,100] you are looking up
-  prop.ui.scale=3; // pixels per meter
+  prop.ui.scale=5; // pixels per meter
 
 }
 

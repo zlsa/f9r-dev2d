@@ -53,8 +53,10 @@ var Craft=function(options) {
   this.rocket_shape=new p2.Rectangle(3.66, 42);
   this.rocket_body.addShape(this.rocket_shape);
 
-  this.legs_shape=new p2.Rectangle(15, 0.5);
-  this.rocket_body.addShape(this.legs_shape,[0,-24]);
+  this.right_leg_shape=new p2.Rectangle(2, 0.5);
+  this.left_leg_shape=new p2.Rectangle(2, 0.5);
+  this.rocket_body.addShape(this.right_leg_shape,[-6.5,-24]);
+  this.rocket_body.addShape(this.left_leg_shape,[6.5,-24]);
 
   this.gearDown=true;
 //  this.setGear();
