@@ -3,7 +3,7 @@ function input_init_pre() {
   prop.input={};
 
   prop.input.touch={
-    enabled:true,
+    enabled:false,
     start:[0,0],
     throttle:0,
     vector:0
@@ -51,6 +51,8 @@ function input_done() {
 
   $(window).bind("touchstart",function(event) {
     var position=[event.originalEvent.targetTouches[0].pageX,event.originalEvent.targetTouches[0].pageY];
+
+    prop.input.touch.enabled=true;
 
     prop.input.touch.start=position;
   });
