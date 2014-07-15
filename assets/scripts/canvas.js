@@ -14,8 +14,10 @@ function canvas_init_pre() {
 
 function canvas_init() {
   canvas_add("background");
+  canvas_add("grid");
   canvas_add("ground");
   canvas_add("craft");
+  canvas_add("hud");
 }
 
 function canvas_resize() {
@@ -56,6 +58,18 @@ function canvas_draw_background(cc) {
   cc.fillRect(0,0,prop.canvas.size.width,prop.canvas.size.height);
 }
 
+function canvas_draw_grid(cc) {
+  return;
+  cc.strokeStyle="rgba(0,0,0,0.2)";
+  cc.lineWidth=2;
+  cc.beginPath();
+  for(var x=0;x<prop.canvas.size.width;x+=m_to_pixel(10)) {
+    cc.moveTo(mod((x+prop.ui.pan[0]),prop.canvas.size.width),0);
+    cc.lineTo(mod((x+prop.ui.pan[0]),prop.canvas.size.width),prop.canvas.size.height);
+  }
+  cc.stroke();
+}
+
 // ground
 
 function canvas_draw_ground(cc) {
@@ -67,17 +81,23 @@ function canvas_draw_ground(cc) {
   cc.fillRect(0,Math.max(prop.canvas.size.height/2+m_to_pixel(3)+prop.ui.pan[1],0),
               prop.canvas.size.width,prop.canvas.size.height);
 
-  for(var i=prop.ui.pan[0]-m_to_pixel(20);i<prop.canvas.size.width+m_to_pixel(20);i+=m_to_pixel(5)) {
-    cc.fillRect(i,Math.max(prop.canvas.size.height/2+m_to_pixel(2)+prop.ui.pan[1],0),
-                m_to_pixel(2),m_to_pixel(2));
+  
+  for(var i=0;i<prop.ground.pads.length;i++) {
+    var pad=prop.ground.pads[i];
+    if(pad.material == "concrete") cc.fillStyle="#888";
+    else if(pad.material == "asphalt") cc.fillStyle="#333";
+    cc.fillRect(prop.canvas.size.width/2+prop.ui.pan[0]+m_to_pixel(pad.x-pad.width/2),
+                prop.canvas.size.height/2+prop.ui.pan[1]-m_to_pixel(pad.height),
+                m_to_pixel(pad.width),
+                m_to_pixel(5+pad.height));
   }
-
 }
 
 // craft
 
 function canvas_draw_craft(cc) {
   cc.fillStyle="#fff";
+  if(prop.craft.crashed) cc.fillStyle="#f88";
   cc.strokeStyle="#222";
 
   var w=m_to_pixel(3.66);
@@ -99,7 +119,7 @@ function canvas_draw_craft(cc) {
   cc.lineTo(0,    -h/2);
   cc.fill();
 
-  cc.fillStyle="#ddd";
+  cc.fillStyle="rgba(0,0,0,0.3)";
 
   var s=w/2/3;
 
@@ -112,6 +132,17 @@ function canvas_draw_craft(cc) {
   cc.lineTo(0,   -h/2);
   cc.fill();
 
+  cc.fillStyle="#468";
+
+  var f=trange(0,prop.craft.fuel,385000,0,m_to_pixel(40));
+  var o=m_to_pixel(-2);
+  cc.beginPath();
+  cc.moveTo(w/2,  h/2-f+o);
+  cc.lineTo(w/2,  h/2+o);
+  cc.lineTo(-w/2, h/2+o);
+  cc.lineTo(-w/2, h/2-f+o);
+  cc.fill();
+
   cc.beginPath();
   cc.moveTo(0,    -h/2);
   cc.lineTo(w/2,  -h/2+nosecone_height);
@@ -120,6 +151,99 @@ function canvas_draw_craft(cc) {
   cc.lineTo(-w/2, -h/2+nosecone_height);
   cc.lineTo(0,    -h/2);
   cc.stroke();
+
+  cc.lineWidth=2;
+  cc.beginPath()
+  cc.lineTo(0,h/2);
+
+  cc.strokeStyle="#f82";
+  cc.lineWidth=4;
+  cc.lineCap="round";
+
+  var v=prop.craft.thrust_vector*prop.craft.vector_max;
+  var throttle=trange(0,prop.craft.throttle,1,prop.craft.min_throttle,prop.craft.max_throttle);
+  if(prop.craft.fuel <= 0) throttle=0;
+  if(prop.craft.throttle <= 0.01) throttle=0;
+  var s=m_to_pixel(10)*throttle;
+  var force=[-sin(v)*s,cos(v)*s];
+  
+  if(prop.craft.engine_number == 3 || prop.craft.engine_number == 1) {
+    cc.moveTo(0,h/2);
+    cc.lineTo(force[0],h/2+force[1]);
+  }
+
+  if(prop.craft.engine_number == 3 || prop.craft.engine_number == 2) {
+    var e=m_to_pixel(1);
+    cc.moveTo(-e,h/2);
+    cc.lineTo(-e+force[0],h/2+force[1]);
+
+    cc.moveTo(e,h/2);
+    cc.lineTo(e+force[0],h/2+force[1]);
+  }
+
+  cc.stroke();
+  cc.strokeStyle = "#666";
+
+  cc.lineCap="butt";
+
+  cc.lineWidth=4;
+  s=m_to_pixel(1.0);
+  var force=[-sin(v)*s,cos(v)*s];
+
+  cc.beginPath();
+
+  cc.moveTo(0,h/2);
+  cc.lineTo(force[0],h/2+force[1]);
+
+  var e=m_to_pixel(1);
+  cc.moveTo(-e,h/2);
+  cc.lineTo(-e+force[0],h/2+force[1]);
+
+  cc.moveTo(e,h/2);
+  cc.lineTo(e+force[0],h/2+force[1]);
+
+  cc.stroke();
+
+
+  cc.fillStyle="#333";
+  if(prop.craft.gearDown) {
+    var gw=m_to_pixel(15);
+    var cw=m_to_pixel(0.5);
+    var ch=m_to_pixel(2);
+    var cd=m_to_pixel(0.8);
+    var b=h/2+m_to_pixel(3.2);
+    cc.moveTo(-gw/2,    b);
+    cc.lineTo(-gw/2+cw, b);
+    cc.lineTo(-w/2+cd,  h/2);
+    cc.lineTo( w/2-cd,  h/2);
+    cc.lineTo( gw/2-cw, b);
+    cc.lineTo( gw/2,    b);
+    cc.lineTo( gw/2,    b-cw);
+    cc.lineTo( w/2,     h/2-ch);
+    cc.lineTo(-w/2,     h/2-ch);
+    cc.lineTo(-gw/2,    b-cw);
+  }
+
+  cc.fill();
+
+}
+
+function canvas_draw_hud(cc) {
+  cc.font="20px bold monospace, monoOne";
+  cc.textAlign="center";
+  cc.fillStyle="#000";
+
+  // altitude
+  cc.fillText("alt "+prop.craft.getAltitude().toFixed(0)+"m",prop.canvas.size.width/2,30);
+
+  // vspeed
+  cc.fillText("v/s "+(prop.craft.rocket_body.velocity[1]+0.1).toFixed(0)+"m/s",prop.canvas.size.width/2-200,30);
+
+  // hspeed
+  cc.fillText("h/s "+(prop.craft.rocket_body.velocity[0]+0.1).toFixed(0)+"m/s",prop.canvas.size.width/2+200,30);
+
+  // help
+  cc.fillText("keys: 'r' to reset, 'x' to kill throttle, up and down for throttle, left and right for thrust vector",prop.canvas.size.width/2,prop.canvas.size.height-10);
 }
 
 function canvas_update_post() {
@@ -127,6 +251,12 @@ function canvas_update_post() {
   cc.save();
   canvas_clear(cc);
   canvas_draw_background(cc);
+  cc.restore();
+
+  var cc=canvas_get("grid");
+  cc.save();
+  canvas_clear(cc);
+  canvas_draw_grid(cc);
   cc.restore();
 
   var cc=canvas_get("ground");
@@ -139,5 +269,11 @@ function canvas_update_post() {
   cc.save();
   canvas_clear(cc);
   canvas_draw_craft(cc);
+  cc.restore();
+
+  var cc=canvas_get("hud");
+  cc.save();
+  canvas_clear(cc);
+  canvas_draw_hud(cc);
   cc.restore();
 }
