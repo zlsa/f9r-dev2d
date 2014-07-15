@@ -87,7 +87,13 @@ var Craft=function(options) {
     this.rocket_body.angularVelocity=s.angular_velocity;
 
     this.offset=trange(0,this.fuel,this.full_fuel,this.mass_distribution[0],this.mass_distribution[1]);
-    this.rocket_body.position[1]+=26-this.offset;
+    this.rocket_body.position[1]+=30-this.offset;
+    this.rocket_body.shapeOffsets[0][0]=0;
+    this.rocket_body.shapeOffsets[0][1]=0;
+    this.rocket_body.shapeOffsets[1][0]=-6.5;
+    this.rocket_body.shapeOffsets[2][0]=6.5;
+    this.rocket_body.shapeOffsets[1][1]=this.leg_offset;
+    this.rocket_body.shapeOffsets[2][1]=this.leg_offset;
 
     this.update();
   };
@@ -169,14 +175,20 @@ var Craft=function(options) {
     this.rocket_body.mass=(this.mass+this.fuel)*0.01;
     this.offset=trange(0,this.fuel,this.full_fuel,this.mass_distribution[0],this.mass_distribution[1]);
     this.rocket_body.shapeOffsets[0][1]=this.offset;
-    this.rocket_body.shapeOffsets[1][1]=this.leg_offset+this.offset;
-    this.rocket_body.shapeOffsets[2][1]=this.leg_offset+this.offset;
-    if(!this.gear_down) {
-      this.rocket_body.shapeOffsets[1]=[0,0];
-      this.rocket_body.shapeOffsets[2]=[0,0];
-    } else {
+    if(this.gear_down) {
       this.rocket_body.shapeOffsets[1][0]=-6.5;
       this.rocket_body.shapeOffsets[2][0]=6.5;
+      this.rocket_body.shapeOffsets[1][1]=this.leg_offset+this.offset;
+      this.rocket_body.shapeOffsets[2][1]=this.leg_offset+this.offset;
+      this.left_leg_shape.sensor=false;
+      this.right_leg_shape.sensor=false;
+    } else {
+      this.rocket_body.shapeOffsets[1][0]=0;
+      this.rocket_body.shapeOffsets[1][1]=0;
+      this.rocket_body.shapeOffsets[2][0]=0;
+      this.rocket_body.shapeOffsets[2][1]=0;
+      this.left_leg_shape.sensor=true;
+      this.right_leg_shape.sensor=true;
     }
     this.rocket_body.updateMassProperties();
     var d=0.05;
