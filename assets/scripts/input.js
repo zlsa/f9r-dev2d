@@ -23,7 +23,11 @@ function input_init_pre() {
   prop.input.keysym={
     shift:16,
     control:17,
+    space:32,
     a:65,
+    b:66,
+    c:67,
+    d:68,
     g:71,
     r:82,
     x:88,
@@ -41,12 +45,16 @@ function input_init_pre() {
 function input_done() {
   $(window).keydown(function(e) {
     prop.input.keys[e.which]=true;
+    e.preventDefault();
+    return false;
   });
 
   $(window).keyup(function(e) {
     prop.input.keys[e.which]=false;
     console.log(e.which);
     input_keyup(e.which);
+    e.preventDefault();
+    return false;
   });
 
   $(window).bind("touchstart",function(event) {
@@ -85,6 +93,9 @@ function input_done() {
 }
 
 function input_keyup(keycode) {
+  if(keycode == prop.input.keysym["space"]) {
+    prop.craft.unclamp();
+  }
   if(keycode == prop.input.keysym["r"]) {
     prop.craft.reset();
   }
@@ -109,6 +120,11 @@ function input_update_pre() {
   } else if(prop.input.keys[prop.input.keysym.down]) {
     prop.craft.throttle-=1*delta();
   }
+  if(prop.input.keys[prop.input.keysym.shift]) {
+    prop.craft.throttle+=1*delta();
+  } else if(prop.input.keys[prop.input.keysym.control]) {
+    prop.craft.throttle-=1*delta();
+  }
   if(prop.input.keys[prop.input.keysym.x]) {
     prop.craft.throttle=0;
   }
@@ -122,6 +138,10 @@ function input_update_pre() {
   if(prop.input.keys[prop.input.keysym.left]) {
     prop.craft.thrust_vector-=t*delta();
   } else if(prop.input.keys[prop.input.keysym.right]) {
+    prop.craft.thrust_vector+=t*delta();
+  } else if(prop.input.keys[prop.input.keysym.d]) {
+    prop.craft.thrust_vector-=t*delta();
+  } else if(prop.input.keys[prop.input.keysym.a]) {
     prop.craft.thrust_vector+=t*delta();
   } else if(!prop.input.touch.enabled) {
     if(prop.craft.thrust_vector > 0.1){

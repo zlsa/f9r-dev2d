@@ -23,10 +23,19 @@ var Pad=function(options) {
 function ground_init_pre() {
   prop.ground={};
 
+  prop.ground.clamp=[-30,0.5];
+
   prop.ground.pads=[];
 }
 
 function ground_init() {
+
+  prop.ground.clamp_height=3;
+
+  prop.ground.clamp_shape=new p2.Rectangle(4,prop.ground.clamp_height);
+
+  prop.physics.ground_body.addShape(prop.ground.clamp_shape,[-prop.ground.clamp[0],prop.ground.clamp_height]);
+
   ground_add_pad({
     x:-400,
     width:100,

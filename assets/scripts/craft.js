@@ -14,7 +14,8 @@ var Craft=function(options) {
       angle: 0,
       angular_velocity: 0,
       fuel: 90000,
-      gear_down:true
+      gear_down:true,
+      clamp:true
     },
     "f9r-dev2": {
       position: [0,0],
@@ -24,7 +25,8 @@ var Craft=function(options) {
       angle: 0,
       angular_velocity: 0,
       fuel: 350000,
-      gear_down:false
+      gear_down:false,
+      clamp:true
     },
     "f9-reentry": {
       position: [0,7000],
@@ -34,7 +36,8 @@ var Craft=function(options) {
       angle: 0,
       angular_velocity: 0,
       fuel: 30000,
-      gear_down:false
+      gear_down:false,
+      clamp:false
     }
   };
 
@@ -43,12 +46,16 @@ var Craft=function(options) {
   this.autopilot={
     enabled: false
   };
+
+  this.clamped=false;
   
   this.reset=function(scenario) {
     if(!scenario) scenario=this.scenario;
     this.scenario=scenario;
     var s=this.scenarios[scenario];
     this.start=time()
+
+    this.clamped=s.clamp;
 
     this.crashed=false;
     this.crash_time=null;
@@ -95,7 +102,10 @@ var Craft=function(options) {
     this.rocket_body.shapeOffsets[1][1]=this.leg_offset;
     this.rocket_body.shapeOffsets[2][1]=this.leg_offset;
 
+    if(s.clamp) this.clamp();
+
     this.update();
+  
   };
 
   this.full_fuel=350000;
@@ -159,6 +169,16 @@ var Craft=function(options) {
     }
   };
 
+  this.clamp=function() {
+    this.rocket_body.position=[-prop.ground.clamp[0],prop.ground.clamp[1]+26-this.offset];
+    this.rocket_body.mass=0;
+  };
+
+  this.unclamp=function() {
+    this.clamped=false;
+    this.rocket_body.position=[-prop.ground.clamp[0],prop.ground.clamp[1]+26-this.offset];
+  };
+
   this.toggleGear=function() {
     this.setGear(!this.gear_down);
   };
@@ -172,8 +192,11 @@ var Craft=function(options) {
   };
 
   this.updateMass=function() {
-    this.rocket_body.mass=(this.mass+this.fuel)*0.01;
+    if(this.clamped) {
+      return;
+    }
     this.offset=trange(0,this.fuel,this.full_fuel,this.mass_distribution[0],this.mass_distribution[1]);
+    this.rocket_body.mass=(this.mass+this.fuel)*0.01;
     this.rocket_body.shapeOffsets[0][1]=this.offset;
     if(this.gear_down) {
       this.rocket_body.shapeOffsets[1][0]=-6.5;
@@ -225,13 +248,17 @@ var Craft=function(options) {
     if(this.crashed) this.throttle=0;
     var throttle=trange(0,this.throttle,1,this.min_throttle,this.max_throttle);
     if(this.throttle <= 0.01) throttle=0;
-    this.thrust=trange(0,this.getAltitude(),100000,this.thrust_peak[0],this.thrust_peak[1])*this.engine_number*throttle;
-    if(this.fuel <= 0) this.thrust=0;
+    var thrust=trange(0,this.getAltitude(),100000,this.thrust_peak[0],this.thrust_peak[1])*this.engine_number*throttle;
+    if(this.fuel <= 0) thrust=0;
     var v=(this.thrust_vector*this.vector_max)+this.angle;
     var force=[-sin(v)*this.thrust,cos(v)*this.thrust];
     var point=[0,0];
-    this.rocket_body.toWorldFrame(point,[0,-22]);
-    this.rocket_body.applyForce(force,point);
+    if(!this.clamped) {
+      this.rocket_body.toWorldFrame(point,[0,-22]);
+      this.rocket_body.applyForce(force,point);
+    }
+    var mix=0.7;
+    this.thrust=thrust*(1-mix)+this.thrust*mix;
   };
 
   this.updateLocal=function() {
@@ -241,11 +268,11 @@ var Craft=function(options) {
   };
 
   this.updateCrash=function() {
-    if(time()-this.start < 2) return; // do not crash in the first few seconds
+    if(time()-this.start < 1) return; // do not crash in the first few seconds
     if(!this.crashed) {
       if(this.rocket_body.overlaps(prop.physics.ground_body)) { // touching ground
         if(!this.gear_down) this.crashed=true; // crash if gear up
-        if(distance([0,0],this.rocket_body.velocity) > 2) {
+        if(distance([0,0],this.rocket_body.velocity) > 1.5) {
           this.crashed=true;
         }
         var angle=normalizeAngle(this.rocket_body.angle+Math.PI);

@@ -107,6 +107,24 @@ function canvas_draw_pads(cc) {
     canvas_draw_pad(cc,pad);
     cc.restore();
   }
+  cc.save();
+  cc.fillStyle="#a42";
+  cc.translate(prop.canvas.size.width/2+prop.ui.pan[0]+m_to_pixel(prop.ground.clamp[0]),prop.canvas.size.height/2+prop.ui.pan[1]);
+  cc.fillRect(-m_to_pixel(2),
+              -m_to_pixel(4.0),
+              m_to_pixel(4),
+              m_to_pixel(6));
+  if(prop.craft.clamped) {
+    cc.fillRect(-m_to_pixel(2.3),
+                -m_to_pixel(6.0),
+                m_to_pixel(1),
+                m_to_pixel(3));
+    cc.fillRect(m_to_pixel(1.3),
+                -m_to_pixel(6.0),
+                m_to_pixel(1),
+                m_to_pixel(3));
+  }
+  cc.restore();
 }
 
 // craft
@@ -195,9 +213,7 @@ function canvas_draw_craft(cc) {
   cc.lineCap="round";
 
   var v=prop.craft.thrust_vector*prop.craft.vector_max;
-  var throttle=trange(0,prop.craft.throttle,1,prop.craft.min_throttle,prop.craft.max_throttle);
-  if(prop.craft.fuel <= 0) throttle=0;
-  if(prop.craft.throttle <= 0.01) throttle=0;
+  var throttle=trange(0,prop.craft.thrust,prop.craft.thrust_peak[1]*prop.craft.engine_number,0,1);
   var s=m_to_pixel(10)*throttle;
 
   var force=[-sin(v)*s,cos(v)*s];
