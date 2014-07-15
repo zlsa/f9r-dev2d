@@ -368,7 +368,7 @@ function canvas_draw_hud(cc) {
   cc.fillText("h/s "+(-prop.craft.rocket_body.velocity[0]+0.1).toFixed(0)+"m/s",prop.canvas.size.width/2+200,30);
 
   // help
-  cc.fillText("keys: throttle: up, down, and 'x'; vector: left, right; number of engines enabled: number keys ("+prop.craft.engine_number.toString()+")",prop.canvas.size.width/2,prop.canvas.size.height-17);
+  cc.fillText("keys: throttle: up, down, and 'x'; vector: left, right; gear: 'g'; number of engines enabled: number keys ("+prop.craft.engine_number.toString()+")",prop.canvas.size.width/2,prop.canvas.size.height-17);
 
   // crashed
   if(prop.craft.crashed)
