@@ -22,6 +22,8 @@ function km_to_pixel(kilometers) {
 }
 
 function ui_update() {
-  prop.ui.pan[0]=m_to_pixel(prop.craft.pos[0]);
-  prop.ui.pan[1]=m_to_pixel(prop.craft.pos[1])+m_to_pixel(prop.craft.offset);
+  var o=m_to_pixel(prop.craft.offset);
+  var a=prop.craft.angle;
+  prop.ui.pan[0]=m_to_pixel(prop.craft.pos[0]);//+sin(a)*o;
+  prop.ui.pan[1]=m_to_pixel(prop.craft.pos[1]);//+cos(a)*o;
 }

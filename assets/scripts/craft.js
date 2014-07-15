@@ -8,6 +8,8 @@ var Craft=function(options) {
   };
 
   this.reset=function() {
+    this.start=time()
+
     this.crashed=false;
 
     this.mass=18000;
@@ -125,6 +127,7 @@ var Craft=function(options) {
   };
 
   this.updateCrash=function() {
+    if(time()-this.start < 2) return; // do not crash in the first few seconds
     if(this.rocket_body.overlaps(prop.physics.ground_body)) { // touching ground
       if(distance([0,0],this.rocket_body.velocity) > 3) {
         this.crashed=true;

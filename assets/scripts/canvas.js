@@ -107,6 +107,7 @@ function canvas_draw_craft(cc) {
   cc.translate(prop.canvas.size.width/2,prop.canvas.size.height/2);
 //  cc.translate(m_to_pixel(prop.craft.pos[0]),-m_to_pixel(prop.craft.pos[1]));
   cc.rotate(prop.craft.angle);
+  cc.translate(0,-m_to_pixel(prop.craft.offset));
 //  cc.translate(-prop.ui.pan[0],prop.ui.pan[1]);
 
   cc.beginPath();
