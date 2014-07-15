@@ -243,7 +243,7 @@ function canvas_draw_hud(cc) {
   cc.fillText("v/s "+(prop.craft.rocket_body.velocity[1]+0.1).toFixed(0)+"m/s",prop.canvas.size.width/2-200,30);
 
   // hspeed
-  cc.fillText("h/s "+(prop.craft.rocket_body.velocity[0]+0.1).toFixed(0)+"m/s",prop.canvas.size.width/2+200,30);
+  cc.fillText("h/s "+(-prop.craft.rocket_body.velocity[0]+0.1).toFixed(0)+"m/s",prop.canvas.size.width/2+200,30);
 
   // help
   cc.fillText("keys: 'r' to reset, 'x' to kill throttle, up and down for throttle, left and right for thrust vector",prop.canvas.size.width/2,prop.canvas.size.height-17);

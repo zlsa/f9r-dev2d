@@ -28,7 +28,7 @@ var Craft=function(options) {
   this.thrust_peak=[65.40*0.4,71.60*0.4];
 
   // kg of fuel per second of a single engine at sea level and in a vacuum
-  this.fuel_flow=[150*10,135*10];
+  this.fuel_flow=[150*15,135*15];
   
   // max engine vector
   this.vector_max=radians(5);

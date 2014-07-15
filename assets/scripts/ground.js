@@ -34,9 +34,29 @@ function ground_init() {
   ground_add_pad({
     x:200,
     width:200,
-    height: 2000,
+    height: 500,
     material:"asphalt"
   });
+
+  ground_add_pad({
+    x:-400,
+    width:100,
+    height: 1
+  });
+
+  ground_add_pad({
+    x:400,
+    width:30,
+    height: 50
+  });
+
+  ground_add_pad({
+    x:600,
+    width:30,
+    height: 1,
+    material: "asphalt"
+  });
+
 }
 
 function ground_add_pad(options) {
