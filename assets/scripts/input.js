@@ -1,5 +1,5 @@
 
-function input_init() {
+function input_init_pre() {
   prop.input={};
 
   prop.input.button={
@@ -8,6 +8,8 @@ function input_init() {
     middle:2,
     right:3
   };
+
+  prop.input.two=false;
 
   prop.input.keys={};
 
@@ -47,6 +49,8 @@ function input_keyup(keycode) {
   }
   if(keycode == prop.input.keysym["1"]) {
     prop.craft.engine_number=1;
+  } else if(keycode == prop.input.keysym["2"]) {
+    if(prop.input.two) prop.craft.engine_number=2;
   } else if(keycode == prop.input.keysym["3"]) {
     prop.craft.engine_number=3;
   } else if(keycode == prop.input.keysym["9"]) {

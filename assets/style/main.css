@@ -1,6 +1,7 @@
 
 @import "reset.css";
 @import "canvas.css";
+@import "settings.css";
 
 html,body {
     height: 100%;
@@ -9,5 +10,5 @@ html,body {
 
 html {
     background-color: #ddd;
-    font-family: sans-serif;
+    font: 14px bold monospace, "Ubuntu Mono";
 }

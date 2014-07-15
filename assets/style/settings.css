@@ -1,0 +1,57 @@
+
+#settings {
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  user-select: none !important;
+  background-color: rgba(0,0,0,0.8);
+  opacity: 0.5;
+  color: #fff;
+  position: absolute;
+  top: -1px;
+  right: 1px;
+  padding: 5px;
+  transition: opacity 5s ease-out;
+}
+
+#settings:hover {
+  opacity: 1;
+  transition: opacity 0.05s ease-in;
+}
+
+#settings .setting {
+  position: relative;
+  padding: 3px 7px;
+  padding-left: 15px;
+}
+
+#settings .setting+.setting {
+  margin-top: 3px;
+}
+
+#settings .setting:hover {
+  background-color: rgba(255,255,255,0.12);
+  cursor: pointer;
+}
+
+#settings .setting:active {
+  background-color: rgba(255,255,255,0.3);
+}
+
+#settings .setting.type-bool:before {
+  display: block;
+  content: "";
+  background-color: rgba(255,255,255,0.2);
+  position: absolute;
+  top: 7px;
+  left: 7px;
+  width: 10px;
+  height: 10px;
+}
+
+#settings .setting.type-bool.on:before {
+  background-color: #38f;
+}
+
+#settings .setting .name {
+  padding-left: 10px;
+}

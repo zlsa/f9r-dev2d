@@ -6,6 +6,8 @@ var MODULES=[
   "-util",
   "-animation",
   "ui",
+  "settings",
+  "audio",
   "input",
 //  "get",
   "ground",
@@ -254,5 +256,5 @@ function update() {
 }
 
 function delta() {
-  return prop.time.frame.delta;
+  return Math.min(prop.time.frame.delta,0.5);
 }

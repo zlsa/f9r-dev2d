@@ -3,6 +3,8 @@ var Craft=function(options) {
   this.pos=[0,0];
   this.angle=0;
 
+  this.g_force=0;
+
   this.autopilot={
     enabled: false
   };
@@ -68,6 +70,8 @@ var Craft=function(options) {
   this.rocket_body.addShape(this.right_leg_shape,[-6.5,this.leg_offset]);
   this.rocket_body.addShape(this.left_leg_shape,[6.5,this.leg_offset]);
 
+  this.rocket_body.updateBoundingRadius();
+
   this.gearDown=true;
 //  this.setGear();
 
@@ -127,6 +131,7 @@ var Craft=function(options) {
   this.updateLocal=function() {
     this.pos=this.rocket_body.position;
     this.angle=normalizeAngle(this.rocket_body.angle);
+    this.g_force=distance([0,0],this.rocket_body.force)*0.001;
   };
 
   this.updateCrash=function() {
@@ -157,7 +162,7 @@ var Craft=function(options) {
 
 };
 
-function craft_init() {
+function craft_init_pre() {
   prop.craft=new Craft();
 }
 

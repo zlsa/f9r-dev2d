@@ -28,8 +28,16 @@ function ground_init_pre() {
 
 function ground_init() {
   ground_add_pad({
+    x:-400,
+    width:100,
+    height: 1,
+    name:"the witch of the west lives here"
+  });
+
+
+  ground_add_pad({
     x:-300,
-    width:20,
+    width:30,
     height: 2,
     name:"moo, i'm a cow",
     material:"asphalt"
@@ -48,13 +56,6 @@ function ground_init() {
     height: 5,
     material:"asphalt",
     name:"hop 1"
-  });
-
-  ground_add_pad({
-    x:-400,
-    width:100,
-    height: 1,
-    name:"the witch of the west lives here"
   });
 
   ground_add_pad({
