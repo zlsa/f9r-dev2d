@@ -137,14 +137,18 @@ function canvas_draw_craft(cc) {
 
   cc.fillStyle="#468";
 
+  var heatshield_height=m_to_pixel(3)-2;
+
   var f=trange(0,prop.craft.fuel,385000,0,m_to_pixel(40));
-  var o=m_to_pixel(-2);
+
   cc.beginPath();
-  cc.moveTo(w/2,  h/2-f+o);
-  cc.lineTo(w/2,  h/2+o);
-  cc.lineTo(-w/2, h/2+o);
-  cc.lineTo(-w/2, h/2-f+o);
+  cc.moveTo(w/2,  h/2-f-heatshield_height);
+  cc.lineTo(w/2,  h/2-heatshield_height);
+  cc.lineTo(-w/2, h/2-heatshield_height);
+  cc.lineTo(-w/2, h/2-f-heatshield_height);
   cc.fill();
+
+  heatshield_height+=2;
 
   if(prop.craft.crashed) {
     cc.fillStyle="#f88";
@@ -279,7 +283,59 @@ function canvas_draw_craft(cc) {
     cc.lineTo(-gw/2,    b-cw);
   }
 
+  cc.moveTo( w/2, h/2-heatshield_height);
+  cc.lineTo( w/2, h/2);
+  cc.lineTo(-w/2, h/2);
+  cc.lineTo(-w/2, h/2-heatshield_height);
+
+  var leg_hinge_height=m_to_pixel(1.5);
+  var leg_base_width=m_to_pixel(2);
+  var leg_tip_width=m_to_pixel(0.5);
+  var leg_length=m_to_pixel(5.5);
+  var leg_skew=m_to_pixel(0.5);
+  var leg_extend_angle=115;
+
+  leg_extend_angle*=prop.craft.gear_animation.get();
+  leg_extend_angle=radians(leg_extend_angle);
+
   cc.fill();
+
+  cc.beginPath();
+  
+  cc.save()
+  cc.translate(-w/2+leg_skew/1.5,h/2-4);
+  cc.rotate(-leg_extend_angle);
+
+  cc.translate(-leg_skew/2,-leg_hinge_height);
+  cc.moveTo(leg_base_width/3+leg_skew,leg_base_width/2);
+  cc.lineTo(leg_skew,leg_base_width);
+  cc.lineTo(-leg_base_width/2+leg_skew,leg_base_width/2);
+  cc.lineTo(-leg_tip_width/2,-leg_length);
+  cc.lineTo(leg_tip_width/2,-leg_length);
+  cc.lineTo(leg_base_width/3+leg_skew,leg_base_width/2);
+  cc.restore();
+  
+  cc.save()
+  cc.scale(-1,1);
+  cc.translate(-w/2+leg_skew/1.5,h/2-4);
+  cc.rotate(-leg_extend_angle);
+
+  cc.translate(-leg_skew/2,-leg_hinge_height);
+  cc.moveTo(leg_base_width/3+leg_skew,leg_base_width/2);
+  cc.lineTo(leg_skew,leg_base_width);
+  cc.lineTo(-leg_base_width/2+leg_skew,leg_base_width/2);
+  cc.lineTo(-leg_tip_width/2,-leg_length);
+  cc.lineTo(leg_tip_width/2,-leg_length);
+  cc.lineTo(leg_base_width/3+leg_skew,leg_base_width/2);
+  cc.restore();
+  
+  cc.lineWidth=1;
+  cc.fillStyle="#fff";
+  if(prop.craft.crashed) cc.fillStyle="#f88";
+  cc.strokeStyle="#222";
+
+  cc.fill();
+  cc.stroke();
 
 }
 
@@ -312,7 +368,7 @@ function canvas_draw_hud(cc) {
   cc.fillText("h/s "+(-prop.craft.rocket_body.velocity[0]+0.1).toFixed(0)+"m/s",prop.canvas.size.width/2+200,30);
 
   // help
-  cc.fillText("keys: throttle: up, down, and 'x'; vector: left, right; number of engines enabled: number keys",prop.canvas.size.width/2,prop.canvas.size.height-17);
+  cc.fillText("keys: throttle: up, down, and 'x'; vector: left, right; number of engines enabled: number keys ("+prop.craft.engine_number.toString()+")",prop.canvas.size.width/2,prop.canvas.size.height-17);
 
   // crashed
   if(prop.craft.crashed)

@@ -17,6 +17,7 @@ function input_init_pre() {
     shift:16,
     control:17,
     a:65,
+    g:71,
     r:82,
     x:88,
     left:37,
@@ -47,6 +48,9 @@ function input_keyup(keycode) {
   if(keycode == prop.input.keysym["r"]) {
     prop.craft.reset();
   }
+  if(keycode == prop.input.keysym["g"]) {
+    prop.craft.toggleGear();
+  }
   if(keycode == prop.input.keysym["1"]) {
     prop.craft.engine_number=1;
   } else if(keycode == prop.input.keysym["2"]) {
@@ -54,7 +58,8 @@ function input_keyup(keycode) {
   } else if(keycode == prop.input.keysym["3"]) {
     prop.craft.engine_number=3;
   } else if(keycode == prop.input.keysym["9"]) {
-//    prop.craft.engine_number=9;
+    if(prop.craft.max_engines == 9)
+      prop.craft.engine_number=9;
   }
 }
 

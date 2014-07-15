@@ -10,7 +10,7 @@ var Setting=function(options) {
     return this.name.replace(" ","-").replace("%","");
   };
 
-  if(this.clean() in localStorage) {
+  if(this.clean() in localStorage && this.type != "button") {
     this.value=JSON.parse(localStorage[this.clean()]);
     this.callback();
   }
@@ -56,6 +56,12 @@ function settings_init_pre() {
 function settings_init() {
   setting_add(["reset","reset the simulation"],"button",null,function() {
     craft_reset();
+  });
+  setting_add(["f9r-dev1","three engines, 1/3 fuel"],"button",null,function() {
+    craft_reset("f9r-dev1");
+  });
+  setting_add(["f9r-dev2","nine engines, full fuel"],"button",null,function() {
+    craft_reset("f9r-dev2");
   });
   setting_add(["limit engine thrust to 70%","enable for realism"],"bool",true,function() {
     if(this.value) prop.craft.min_throttle=0.7;

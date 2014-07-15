@@ -5,7 +5,7 @@ var Animation=function(options) {
   this.end_value=1;
   this.progress=0;
   this.easing="smooth";
-  this.duration=0;
+  this.duration=1;
   this.start=0;
   this.animating=false;
   if(options) {
@@ -17,9 +17,6 @@ var Animation=function(options) {
   }
   this.set=function(value) {
     this.animate(value);
-  };
-  this.get=function(progress) {
-    return this.step(time());
   };
   this.animate=function(value) {
     this.animating=true;
@@ -36,12 +33,13 @@ var Animation=function(options) {
     else
       console.log("Unknown easing '"+this.easing+"'");
   };
-  this.step=function(t) {
-    this.progress=crange(this.start,t,this.start+this.duration,0,1);
-    if(!this.animating)
-      this.progress=0;
+  this.get=function() {
+    var t=time();
+    this.progress=0;
+    if(this.animating)
+      this.progress=crange(this.start,time(),this.start+this.duration,0,1);
     this.ease();
     return this.value;
   };
-  this.step(game_time());
+  this.get();
 };
