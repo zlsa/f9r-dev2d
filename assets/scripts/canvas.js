@@ -231,10 +231,13 @@ function canvas_draw_craft(cc) {
 function canvas_draw_hud(cc) {
   cc.font="20px bold monospace, monoOne";
   cc.textAlign="center";
-  cc.fillStyle="rgba(255,255,255,0.5)";
-  cc.fillRect(prop.canvas.size.width/2-300,5,600,40);
+  cc.fillStyle="rgba(0,0,0,0.5)";
+  cc.fillRect(prop.canvas.size.width/2-300,3,600,40);
   cc.fillRect(0,prop.canvas.size.height-45,prop.canvas.size.width,40);
-  cc.fillStyle="#000";
+  
+  if(prop.craft.crashed)
+    cc.fillRect(prop.canvas.size.width/2-300,prop.canvas.size.height/2-20,600,40);
+  cc.fillStyle="#fff";
 
   // altitude
   cc.fillText("alt "+prop.craft.getAltitude().toFixed(0)+"m",prop.canvas.size.width/2,30);
@@ -247,6 +250,11 @@ function canvas_draw_hud(cc) {
 
   // help
   cc.fillText("keys: 'r' to reset, 'x' to kill throttle, up and down for throttle, left and right for thrust vector",prop.canvas.size.width/2,prop.canvas.size.height-17);
+
+  // crashed
+  if(prop.craft.crashed)
+    cc.fillText("you crashed. press 'r' to reset",prop.canvas.size.width/2,prop.canvas.size.height/2+5);
+
 }
 
 function canvas_update_post() {
