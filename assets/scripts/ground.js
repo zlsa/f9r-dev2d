@@ -28,6 +28,14 @@ function ground_init_pre() {
 
 function ground_init() {
   ground_add_pad({
+    x:-300,
+    width:20,
+    height: 2,
+    name:"moo, i'm a cow",
+    material:"asphalt"
+  });
+
+  ground_add_pad({
     x:0,
     width:100,
     height: 1,
