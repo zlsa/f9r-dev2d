@@ -87,7 +87,7 @@ var Craft=function(options) {
     this.rocket_body.angularVelocity=s.angular_velocity;
 
     this.offset=trange(0,this.fuel,this.full_fuel,this.mass_distribution[0],this.mass_distribution[1]);
-    this.rocket_body.position[1]+=30-this.offset;
+    this.rocket_body.position[1]+=25-this.offset;
     this.rocket_body.shapeOffsets[0][0]=0;
     this.rocket_body.shapeOffsets[0][1]=0;
     this.rocket_body.shapeOffsets[1][0]=-6.5;
