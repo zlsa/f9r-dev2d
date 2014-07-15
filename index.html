@@ -4,6 +4,7 @@
     <title>2-D F9R-Dev game</title>
     <link href="http://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="assets/style/main.css" />
+    <meta name="viewport" content="width=device-width, user-scalable=no">
     <script src="assets/scripts/jquery.min.js"></script>
     <script src="assets/scripts/p2.min.js"></script>
     <script src="assets/scripts/fiber.min.js"></script>
@@ -12,8 +13,15 @@
   <body>
     <div id="canvases"></div>
     <div id="settings"></div>
-    <a href="https://github.com/zlsa/f9r-dev2d" style="opacity: 0.5">
+    <a href="https://github.com/zlsa/f9r-dev2d" style="opacity: 0.5" id="fork-me">
       <img style="position: absolute; top: 0; left: 0; border: 0;" src="https://camo.githubusercontent.com/567c3a48d796e2fc06ea80409cc9dd82bf714434/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_left_darkblue_121621.png">
     </a>
+    <div id="touch-buttons">
+      <div id="1-engine" onclick="javascript:prop.craft.engine_number=1"><img src="assets/images/1-engine.png" /></div>
+      <div id="3-engine" onclick="javascript:prop.craft.engine_number=3"><img src="assets/images/3-engines.png" /></div>
+      <div id="9-engine" onclick="javascript:prop.craft.engine_number=9"><img src="assets/images/9-engines.png" /></div>
+      <div id="gear" onclick="javascript:prop.craft.toggleGear()()"><img src="assets/images/gear.png" /></div>
+      <div id="restart" onclick="javascript:prop.craft.reset()"><img src="assets/images/reset.png" /></div>
+    </div>
   </body>
 </html>

@@ -350,7 +350,8 @@ function canvas_draw_hud(cc) {
 
   cc.fillStyle="rgba(0,0,0,0.4)";
   cc.fillRect(prop.canvas.size.width/2-300,9,600,30);
-  cc.fillRect(0,prop.canvas.size.height-37,prop.canvas.size.width,30);
+  if(prop.canvas.size.width > 700)
+    cc.fillRect(0,prop.canvas.size.height-37,prop.canvas.size.width,30);
   
   if(prop.craft.crashed) {
     cc.fillStyle="rgba(191,32,0,0.8)";
@@ -362,17 +363,20 @@ function canvas_draw_hud(cc) {
   cc.fillText("alt "+prop.craft.getAltitude().toFixed(0)+"m",prop.canvas.size.width/2,30);
 
   // vspeed
-  cc.fillText("v/s "+(prop.craft.rocket_body.velocity[1]+0.1).toFixed(0)+"m/s",prop.canvas.size.width/2-200,30);
+  cc.fillText("v/s "+(prop.craft.rocket_body.velocity[1]+0.1).toFixed(0)+"m/s",prop.canvas.size.width/2-100,30);
 
   // hspeed
-  cc.fillText("h/s "+(-prop.craft.rocket_body.velocity[0]+0.1).toFixed(0)+"m/s",prop.canvas.size.width/2+200,30);
+  cc.fillText("h/s "+(-prop.craft.rocket_body.velocity[0]+0.1).toFixed(0)+"m/s",prop.canvas.size.width/2+100,30);
 
   // help
-  cc.fillText("keys: throttle: up, down, and 'x'; vector: left, right; gear: 'g'; number of engines enabled: number keys ("+prop.craft.engine_number.toString()+")",prop.canvas.size.width/2,prop.canvas.size.height-17);
+  if(prop.canvas.size.width > 700)
+    cc.fillText("keys: throttle: up, down, and 'x'; vector: left, right; gear: 'g'; number of engines enabled: number keys ("+prop.craft.engine_number.toString()+")",prop.canvas.size.width/2,prop.canvas.size.height-17);
 
   // crashed
+  var reset_message="press 'r' to reset";
+  if(prop.canvas.size.width < 700) reset_message="press the reset button";
   if(prop.craft.crashed)
-    cc.fillText("you crashed a multimillion-dollar test rig. press 'r' to reset",prop.canvas.size.width/2,prop.canvas.size.height/2+5);
+    cc.fillText("you crashed the test rig. "+reset_message,prop.canvas.size.width/2,prop.canvas.size.height/2+5);
 
 }
 

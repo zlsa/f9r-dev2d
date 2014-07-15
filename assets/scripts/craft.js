@@ -24,7 +24,7 @@ var Craft=function(options) {
       angle: 0,
       angular_velocity: 0,
       fuel: 350000,
-      gear_down:true
+      gear_down:false
     },
     "f9-reentry": {
       position: [0,7000],

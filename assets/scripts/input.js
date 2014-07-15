@@ -2,6 +2,13 @@
 function input_init_pre() {
   prop.input={};
 
+  prop.input.touch={
+    enabled:true,
+    start:[0,0],
+    throttle:0,
+    vector:0
+  };
+
   prop.input.button={
     none:0,
     left:1,
@@ -40,6 +47,37 @@ function input_done() {
     prop.input.keys[e.which]=false;
     console.log(e.which);
     input_keyup(e.which);
+  });
+
+  $(window).bind("touchstart",function(event) {
+    var position=[event.originalEvent.targetTouches[0].pageX,event.originalEvent.targetTouches[0].pageY];
+
+    prop.input.touch.start=position;
+  });
+
+  $(window).bind("touchmove",function(event) {
+    var smallest=Math.min(prop.canvas.size.width,prop.canvas.size.height)*0.6;
+
+    var position=[event.originalEvent.targetTouches[0].pageX,event.originalEvent.targetTouches[0].pageY];
+
+    prop.input.touch.throttle=crange(0,prop.input.touch.start[1]-position[1],smallest,0,1);
+    
+    prop.input.touch.vector=crange(-smallest/2,prop.canvas.size.width/2-position[0],smallest/2,1,-1);
+
+    prop.craft.throttle=prop.input.touch.throttle;
+    prop.craft.thrust_vector=prop.input.touch.vector;
+
+    event.preventDefault();
+    return false;
+  });
+
+  $(window).bind("touchend",function(event) {
+    prop.input.touch.throttle=0;
+    prop.input.touch.vector=0;
+
+    prop.craft.throttle=prop.input.touch.throttle;
+    prop.craft.thrust_vector=prop.input.touch.vector;
+
   });
 
 }
@@ -83,11 +121,13 @@ function input_update_pre() {
     prop.craft.thrust_vector-=t*delta();
   } else if(prop.input.keys[prop.input.keysym.right]) {
     prop.craft.thrust_vector+=t*delta();
-  } else if(prop.craft.thrust_vector > 0.1){
-    prop.craft.thrust_vector-=t*delta();
-  } else if(prop.craft.thrust_vector < -0.1){
-    prop.craft.thrust_vector+=t*delta();
-  } else {
-    prop.craft.thrust_vector=0;
+  } else if(!prop.input.touch.enabled) {
+    if(prop.craft.thrust_vector > 0.1){
+      prop.craft.thrust_vector-=t*delta();
+    } else if(prop.craft.thrust_vector < -0.1){
+      prop.craft.thrust_vector+=t*delta();
+    } else {
+      prop.craft.thrust_vector=0;
+    }
   }
 }
