@@ -336,6 +336,31 @@ function canvas_draw_craft(cc) {
 
   cc.fill();
 
+  var ll=leg_length*1.1;
+  cc.save();
+  cc.save();
+  cc.translate(-w/2+leg_skew/1.5,h/2-4);
+  cc.beginPath();
+  cc.translate(0,-leg_length/2);
+  cc.moveTo(0,0);
+  cc.lineTo(-sin(leg_extend_angle)*ll,-cos(leg_extend_angle)*ll+m_to_pixel(3));
+  
+  cc.restore();
+
+  cc.save();
+  cc.translate(w/2-leg_skew/1.5,h/2-4);
+  cc.translate(0,-leg_length/2);
+  cc.moveTo(0,0);
+  cc.lineTo(sin(leg_extend_angle)*ll,-cos(leg_extend_angle)*ll+m_to_pixel(3));
+  
+  cc.restore();
+
+  cc.strokeStyle="#222";
+
+  cc.lineWidth=2;
+  cc.stroke();
+  cc.restore();
+
   cc.beginPath();
   
   cc.save()
