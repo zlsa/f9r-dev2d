@@ -167,11 +167,13 @@ var Craft=function(options) {
   };
 
   this.clamp=function() {
+    if(this.clamped) return;
     this.rocket_body.position=[-prop.ground.clamp[0],prop.ground.clamp[1]+26-this.offset];
     this.rocket_body.mass=0;
   };
 
   this.unclamp=function() {
+    if(!this.clamped) return;
     this.clamped=false;
     this.rocket_body.position=[-prop.ground.clamp[0],prop.ground.clamp[1]+26-this.offset];
   };
