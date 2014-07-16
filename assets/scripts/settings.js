@@ -63,15 +63,25 @@ function settings_init() {
   setting_add(["f9r-dev2","nine engines, full fuel"],"button",null,function() {
     craft_reset("f9r-dev2");
   });
-  setting_add(["flip left-right","flip the engine vector direction"],"bool",false,function() {
+  setting_add(["flip left-right","flip the engine vector direction"],"bool",true,function() {
     if(this.value) prop.input.vector_flip=true;
     else prop.input.vector_flip=false;
+  });
+  setting_add(["minimap","show the minimap"],"bool",true,function() {
+    if(this.value) prop.ui.minimap.enabled=true;
+    else prop.ui.minimap.enabled=true;
   });
   setting_add(["hard mode","enable for realism"],"bool",true,function() {
     if(this.value) {
       prop.craft.min_throttle=0.7;
+      prop.craft.vector_max=radians(1.5);
+      prop.craft.crash_velocity=2;
+      prop.craft.crash_angle=radians(5);
     } else {
       prop.craft.min_throttle=0;
+      prop.craft.vector_max=radians(3);
+      prop.craft.crash_velocity=3;
+      prop.craft.crash_angle=radians(10);
     }
   });
 //  setting_add(["allow two engines","allow two engine usage in addition to one and three engines"],"bool",false,function() {

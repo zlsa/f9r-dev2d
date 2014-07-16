@@ -141,8 +141,8 @@ function canvas_draw_craft(cc) {
   cc.translate(prop.canvas.size.width/2,prop.canvas.size.height/2);
 //  cc.translate(m_to_pixel(prop.craft.pos[0]),-m_to_pixel(prop.craft.pos[1]));
   cc.rotate(prop.craft.angle);
-  cc.translate(0,-m_to_pixel(prop.craft.offset));
-//  cc.translate(-prop.ui.pan[0],prop.ui.pan[1]);
+  cc.translate(0,-m_to_pixel(prop.craft.offset)-m_to_pixel(0.5));
+//  cc.translate(prop.ui.pan[0],-prop.ui.pan[1]);
 
   cc.beginPath();
   cc.moveTo(0,    -h/2);
@@ -232,6 +232,15 @@ function canvas_draw_craft(cc) {
     cc.lineTo(e+force[0],h/2+force[1]);
   }
 
+  if(prop.craft.engine_number >= 5) {
+    var e=m_to_pixel(0.5);
+    cc.moveTo(-e,h/2);
+    cc.lineTo(-e+force[0],h/2+force[1]);
+
+    cc.moveTo(e,h/2);
+    cc.lineTo(e+force[0],h/2+force[1]);
+  }
+
   cc.stroke();
 
   cc.strokeStyle="#fff";
@@ -243,7 +252,7 @@ function canvas_draw_craft(cc) {
 
   if(prop.craft.engine_number >= 3 || prop.craft.engine_number == 1) {
     cc.moveTo(0,h/2);
-    cc.lineTo(force[0],h/2+(force[1]));
+    cc.lineTo(force[0],h/2+force[1]);
   }
 
   if(prop.craft.engine_number >= 3 || prop.craft.engine_number == 2) {
@@ -255,6 +264,15 @@ function canvas_draw_craft(cc) {
     cc.lineTo(e+force[0],h/2+force[1]);
   }
 
+
+  if(prop.craft.engine_number >= 5) {
+    var e=m_to_pixel(0.5);
+    cc.moveTo(-e,h/2);
+    cc.lineTo(-e+force[0],h/2+force[1]);
+
+    cc.moveTo(e,h/2);
+    cc.lineTo(e+force[0],h/2+force[1]);
+  }
 
   cc.stroke();
 
@@ -396,8 +414,70 @@ function canvas_draw_hud(cc) {
 
 }
 
+function canvas_draw_minimap(cc) {
+  if(!prop.ui.minimap.enabled) return;
+
+  cc.save();
+  
+  cc.fillStyle="#000";
+  cc.strokeStyle="#000";
+
+  cc.globalAlpha=0.5;
+
+  cc.beginPath();
+  cc.rect(0,0,prop.ui.minimap.width,prop.ui.minimap.height);
+  cc.clip();
+
+  cc.save();
+
+  function f(n) {
+    return Math.floor(n);
+  }
+
+  var factor=prop.ui.minimap.size_factor;
+
+  cc.translate(0,f(prop.ui.minimap.height/2+prop.ui.pan[1]*factor));
+
+  cc.beginPath();
+  cc.moveTo(0,0);
+  cc.lineTo(prop.ui.minimap.width,0);
+
+  cc.lineWidth=2;
+
+  cc.save();
+  cc.translate(f(prop.ui.minimap.width/2+prop.ui.pan[0]*factor),0);
+
+  for(var i=0;i<prop.ground.pads.length;i++) {
+    var pad=prop.ground.pads[i];
+    var xo=m_to_pixel(pad.x)*factor;
+    var yo=0;
+    cc.moveTo(f(xo-m_to_pixel(pad.width/2)*factor),f(yo-m_to_pixel(pad.height)*factor));
+    cc.lineTo(f(xo+m_to_pixel(pad.width/2)*factor),f(yo-m_to_pixel(pad.height)*factor));
+  }
+
+  cc.stroke();
+
+  cc.restore();
+
+  cc.beginPath();
+  cc.strokeStyle="#f33";
+  cc.translate(prop.ui.pan[0]*factor+prop.ui.minimap.width/2-m_to_pixel(prop.craft.pos[0])*factor,-m_to_pixel(prop.craft.pos[1])*factor+5);
+  cc.moveTo(0,0);
+  var l=m_to_pixel(40)*factor;
+  var angle=prop.craft.angle;
+  
+  cc.lineTo(sin(angle)*l,-cos(angle)*l);
+
+  cc.stroke();
+
+  cc.restore();
+
+  cc.restore();
+}
+
 function canvas_update_post() {
   var cc=canvas_get("background");
+  cc.save();
   cc.save();
   canvas_draw_background(cc);
   cc.restore();
@@ -405,18 +485,21 @@ function canvas_update_post() {
 //  var cc=canvas_get("ground");
   cc.save();
 //  canvas_clear(cc);
+  cc.translate(0,m_to_pixel(prop.craft.offset));
   canvas_draw_ground(cc);
   cc.restore();
 
 //  var cc=canvas_get("pads");
   cc.save();
 //  canvas_clear(cc);
+  cc.translate(0,m_to_pixel(prop.craft.offset));
   canvas_draw_pads(cc);
   cc.restore();
 
 //  var cc=canvas_get("craft");
   cc.save();
 //  canvas_clear(cc);
+  cc.translate(0,m_to_pixel(prop.craft.offset));
   canvas_draw_craft(cc);
   cc.restore();
 
@@ -424,5 +507,10 @@ function canvas_update_post() {
   cc.save();
 //  canvas_clear(cc);
   canvas_draw_hud(cc);
+  cc.restore();
+
+  cc.save();
+  canvas_draw_minimap(cc);
+  cc.restore();
   cc.restore();
 }

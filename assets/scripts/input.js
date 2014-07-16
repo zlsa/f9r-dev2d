@@ -57,12 +57,14 @@ function input_done() {
 //    return false;
   });
 
-  prop.input.vector_flip=false;
+  prop.input.vector_flip=true;
 
   $(window).bind("touchstart",function(event) {
     var position=[event.originalEvent.targetTouches[0].pageX,event.originalEvent.targetTouches[0].pageY];
 
     prop.input.touch.enabled=true;
+
+    $("html").addClass("touch-mode");
 
     prop.input.touch.start=position;
   });

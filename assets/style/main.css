@@ -4,50 +4,51 @@
 @import "settings.css";
 
 html,body {
-    height: 100%;
-    width: 100%;
-    overflow: hidden !important;
+  height: 100%;
+  width: 100%;
+  overflow: hidden !important;
 }
 
 html {
-    background-color: #ddd;
-    font: 14px bold monospace, "Ubuntu Mono";
+  background-color: #ddd;
+  font: 14px bold monospace, "Ubuntu Mono";
 }
 
 #touch-buttons {
   display: none;
 }
 
-@media all and (max-width: 699px) {
-  #fork-me {
-    display: none;
-  }
+html.touch-mode #fork-me {
+  display: none;
+}
 
-  #settings {
-    display: none;
-  }
+html.touch-mode #settings {
+  display: none;
+}
 
-  #touch-buttons {
-    background-color: rgba(0,0,0,0.2);
-    display: block;
-    width: 100%;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    padding: 10px;
-  }
+html.touch-mode #touch-buttons {
+  background-color: rgba(0,0,0,0.2);
+  display: block;
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  padding: 10px;
+}
 
-  #touch-buttons div {
-    border-radius: 5px;
-    background-color: rgba(255,255,255,0.2);
-    display: inline-block;
-    height: 42px;
-    padding: 5px;
-  }
+html.touch-mode #touch-buttons div {
+  border-radius: 5px;
+  background-color: rgba(255,255,255,0.2);
+  display: inline-block;
+  height: 42px;
+  padding: 5px;
+}
 
-  #touch-buttons #restart {
-    position: absolute;
-    right: 10px;
-  }
-  
+html.touch-mode #touch-buttons div.active {
+  background-color: rgba(128,191,255,0.6);
+}
+
+html.touch-mode #touch-buttons #restart {
+  position: absolute;
+  right: 10px;
 }
