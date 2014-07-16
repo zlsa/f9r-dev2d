@@ -226,7 +226,11 @@ var Craft=function(options) {
   };
   
   this.getAltitude=function() {
-    return this.pos[1]-this.offset+13.4;
+    return this.pos[1]+this.offset-26;
+  };
+
+  this.getVspeed=function() {
+    return this.rocket_body.velocity[1];
   };
 
   this.updateAutopilot=function() {
@@ -234,10 +238,11 @@ var Craft=function(options) {
     this.engine_number=3;
 
     this.autopilot.target_altitude=100;
-    this.autopilot.target_vspeed=crange(10,this.getAltitude()-this.autopilot.target_altitude,-10,-0.1,0.1);
+    this.autopilot.target_vspeed=crange(100,this.getAltitude()-this.autopilot.target_altitude,-100,-10,10);
 
-    this.throttle+=crange(-1,this.autopilot.target_vspeed,1,-10*delta(),10*delta());
-    this.thrust_vector=this.angle*100;
+    this.throttle=crange(0,this.autopilot.target_vspeed-this.getVspeed(),1,0,1);
+    this.throttle=clamp(0.05,this.throttle,1);
+    this.thrust_vector=(mod((this.angle-Math.PI),Math.PI*2)-Math.PI)*1000;
   };
 
   this.updateFuel=function() {
