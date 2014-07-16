@@ -230,14 +230,14 @@ var Craft=function(options) {
   };
 
   this.updateAutopilot=function() {
-    return;
     if(!this.autopilot.enabled) return;
     this.engine_number=3;
 
-    this.autopilot.target_altitude=1
-    this.autopilot.target_vspeed=crange(-1,this.getAltitude()-this.autopilot.target_altitude,1,-0.5,0.5);
+    this.autopilot.target_altitude=100;
+    this.autopilot.target_vspeed=crange(10,this.getAltitude()-this.autopilot.target_altitude,-10,-0.1,0.1);
 
-    this.throttle+=crange(-1,this.autopilot.target_vspeed,1,-1*delta(),1*delta());
+    this.throttle+=crange(-1,this.autopilot.target_vspeed,1,-10*delta(),10*delta());
+    this.thrust_vector=this.angle*100;
   };
 
   this.updateFuel=function() {

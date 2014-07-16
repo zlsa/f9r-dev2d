@@ -26,6 +26,7 @@ function input_init_pre() {
     shift:16,
     control:17,
     space:32,
+    backspace: 8,
     a:65,
     b:66,
     c:67,
@@ -54,9 +55,12 @@ function input_init_pre() {
 
 function input_done() {
   $(window).keydown(function(e) {
+    console.log(e.which);
     prop.input.keys[e.which]=true;
-//    e.preventDefault();
-//    return false;
+    if(e.which == 8) {
+      e.preventDefault();
+      return false;
+    }
   });
 
   $(window).keyup(function(e) {
@@ -147,10 +151,10 @@ function input_update_pre() {
     prop.craft.throttle=0;
   }
 
-  if(prop.input.keys[prop.input.keysym.a]) {
+  if(prop.input.keys[prop.input.keysym["backspace"]]) {
     prop.craft.autopilot.enabled=true;
   } else {
-    prop.craft.autopilot.disabled=true;
+    prop.craft.autopilot.enabled=false;
   }
 
   var flip=1;
