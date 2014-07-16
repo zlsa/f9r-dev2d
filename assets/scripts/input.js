@@ -105,6 +105,10 @@ function input_done() {
 }
 
 function input_keyup(keycode) {
+  if(keycode == prop.input.keysym.m) {
+    prop.ui.minimap.show=!prop.ui.minimap.show;
+  }
+
   if(keycode == prop.input.keysym["space"]) {
     prop.craft.unclamp();
   }
@@ -152,12 +156,6 @@ function input_update_pre() {
   var flip=1;
   if(prop.input.vector_flip) flip=-1;
   var t=4; // the speed of full left-right gimbal
-
-  if(prop.input.keys[prop.input.keysym.z]) {
-    prop.ui.minimap.show=true;
-  } else {
-    prop.ui.minimap.show=false;
-  }
 
   if(prop.input.keys[prop.input.keysym.left]) {
     prop.craft.thrust_vector -= t*delta()*flip;
