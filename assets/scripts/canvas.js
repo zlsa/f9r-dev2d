@@ -416,6 +416,7 @@ function canvas_draw_hud(cc) {
 
 function canvas_draw_minimap(cc) {
   if(!prop.ui.minimap.enabled) return;
+  if(prop.canvas.size.width < 400) return;
 
   cc.save();
   
@@ -436,7 +437,7 @@ function canvas_draw_minimap(cc) {
 
   var factor=prop.ui.minimap.size_factor;
 
-  cc.translate(0,f(prop.ui.minimap.height/2+prop.ui.pan[1]*factor));
+  cc.translate(0,f(prop.ui.minimap.height/2+(prop.ui.pan[1]+m_to_pixel(prop.craft.offset))*factor));
 
   cc.beginPath();
   cc.moveTo(0,0);
@@ -461,7 +462,7 @@ function canvas_draw_minimap(cc) {
 
   cc.beginPath();
   cc.strokeStyle="#f33";
-  cc.translate(prop.ui.pan[0]*factor+prop.ui.minimap.width/2-m_to_pixel(prop.craft.pos[0])*factor,-m_to_pixel(prop.craft.pos[1])*factor+5);
+  cc.translate(prop.ui.pan[0]*factor+prop.ui.minimap.width/2-m_to_pixel(prop.craft.pos[0])*factor,-m_to_pixel(prop.craft.pos[1]+prop.craft.offset)*factor+5);
   cc.moveTo(0,0);
   var l=m_to_pixel(40)*factor;
   var angle=prop.craft.angle;

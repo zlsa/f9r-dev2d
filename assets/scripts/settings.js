@@ -69,7 +69,7 @@ function settings_init() {
   });
   setting_add(["minimap","show the minimap"],"bool",true,function() {
     if(this.value) prop.ui.minimap.enabled=true;
-    else prop.ui.minimap.enabled=true;
+    else prop.ui.minimap.enabled=false;
   });
   setting_add(["hard mode","enable for realism"],"bool",true,function() {
     if(this.value) {

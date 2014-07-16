@@ -4,7 +4,7 @@ function ui_init_pre() {
   
   prop.ui.minimap={};
 
-  prop.ui.minimap.enabled=false;
+  prop.ui.minimap.enabled=true;
   prop.ui.minimap.size_factor=0.05;
   prop.ui.minimap.scale=0.5;
   prop.ui.minimap.width=300;
@@ -30,7 +30,7 @@ function km_to_pixel(kilometers) {
 }
 
 function ui_update() {
-  prop.ui.minimap.height=prop.canvas.size.height;
+  prop.ui.minimap.height=prop.canvas.size.height/2;
   prop.ui.minimap.scale=prop.ui.scale*prop.ui.minimap.size_factor;
   prop.ui.pan[0]=m_to_pixel(prop.craft.pos[0]);
   prop.ui.pan[1]=m_to_pixel(prop.craft.pos[1]);
