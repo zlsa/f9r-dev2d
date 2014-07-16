@@ -215,7 +215,7 @@ var Craft=function(options) {
     }
     this.rocket_body.updateMassProperties();
     var d=0.05;
-    if(this.gear_down) d=0.1;
+    if(this.gear_down) d=0.06;
     this.rocket_body.damping=crange(0,this.getAltitude(),100000,d,0.0);
     this.rocket_body.angular_damping=crange(0,this.getAltitude(),100000,d,0.0);
   };
