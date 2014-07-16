@@ -201,10 +201,10 @@ var Craft=function(options) {
 
   this.updateMass=function() {
     if(this.clamped) {
+      this.rocket_body.position=[-prop.ground.clamp[0],prop.ground.clamp[1]+26-this.offset];
+      this.rocket_body.mass=0;
       return;
     }
-    this.offset=trange(0,this.fuel,this.full_fuel,this.mass_distribution[0],this.mass_distribution[1]);
-    this.offset=0;
     this.rocket_body.mass=(this.mass+this.fuel)*0.01;
     this.updateOffset();
     if(this.gear_down) {
