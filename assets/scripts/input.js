@@ -75,6 +75,7 @@ function input_done() {
     var position=[event.originalEvent.targetTouches[0].pageX,event.originalEvent.targetTouches[0].pageY];
 
     prop.input.touch.enabled=true;
+    prop.craft.hard_mode=false;
 
     $("html").addClass("touch-mode");
 
@@ -87,22 +88,24 @@ function input_done() {
     var position=[event.originalEvent.targetTouches[0].pageX,event.originalEvent.targetTouches[0].pageY];
 
     prop.input.touch.throttle=crange(0,prop.input.touch.start[1]-position[1],smallest,0,1);
+    if(prop.input.touch.start[1]-position[1] > smallest/2 && prop.craft.clamped) prop.craft.unclamp();
+    if(prop.input.touch.start[1]-position[1] < -smallest/2 && prop.craft.gear_animation.animating == false) prop.craft.toggleGear();
     
     prop.input.touch.vector=crange(-smallest/2,prop.canvas.size.width/2-position[0],smallest/2,1,-1);
 
     prop.craft.throttle=prop.input.touch.throttle;
-    prop.craft.thrust_vector=prop.input.touch.vector;
+    prop.craft.vector=prop.input.touch.vector;
 
     event.preventDefault();
     return false;
   });
 
   $(window).bind("touchend",function(event) {
-    prop.input.touch.throttle=0;
-    prop.input.touch.vector=0;
+//    prop.input.touch.throttle=0;
+//    prop.input.touch.vector=0;
 
     prop.craft.throttle=prop.input.touch.throttle;
-    prop.craft.thrust_vector=prop.input.touch.vector;
+    prop.craft.vector=prop.input.touch.vector;
 
   });
 
@@ -151,7 +154,7 @@ function input_update_pre() {
     prop.craft.throttle=0;
   }
 
-  if(prop.input.keys[prop.input.keysym["backspace"]]) {
+  if(prop.input.keys[prop.input.keysym.j]) {
     prop.craft.autopilot.enabled=true;
   } else {
     prop.craft.autopilot.enabled=false;
@@ -159,26 +162,17 @@ function input_update_pre() {
 
   var flip=1;
   if(prop.input.vector_flip) flip=-1;
-  var t=4; // the speed of full left-right gimbal
 
   if(prop.input.keys[prop.input.keysym.left]) {
-    prop.craft.thrust_vector -= t*delta()*flip;
+    prop.craft.vector = -1*flip;
   } else if(prop.input.keys[prop.input.keysym.right]) {
-    prop.craft.thrust_vector += t*delta()*flip;
+    prop.craft.vector = 1*flip;
 
   } else if(prop.input.keys[prop.input.keysym.d]) {
-    prop.craft.thrust_vector -= t*delta()*flip;
+    prop.craft.vector = -1*flip;
   } else if(prop.input.keys[prop.input.keysym.a]) {
-    prop.craft.thrust_vector += t*delta()*flip;
+    prop.craft.vector = 1*flip;
   } else if(!prop.input.touch.enabled) {
-
-    if(prop.craft.thrust_vector > 0.1){
-      prop.craft.thrust_vector -= t*delta();
-    } else if(prop.craft.thrust_vector < -0.1){
-      prop.craft.thrust_vector += t*delta();
-    } else {
-      prop.craft.thrust_vector = 0;
-    }
-
+    prop.craft.vector = 0;
   }
 }

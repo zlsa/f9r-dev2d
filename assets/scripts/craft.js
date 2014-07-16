@@ -8,22 +8,26 @@ var Craft=function(options) {
   this.crash_velocity=2;
   this.crash_angle=radians(5);
 
+  this.hard_mode=true;
+
   this.scenarios={
     "f9r-dev1": {
       position: [0,0],
       velocity: [0,0],
+      ballast:15000,
       engine_number:3,
       max_engines: 3,
       angle: 0,
       angular_velocity: 0,
       fuel: 90000,
       gear_down:false,
-      clamp:true
+      clamp:true,
     },
     "f9r-dev2": {
       position: [0,0],
       velocity: [0,0],
       engine_number:9,
+      ballast:10000,
       max_engines: 9,
       angle: 0,
       angular_velocity: 0,
@@ -35,6 +39,7 @@ var Craft=function(options) {
       position: [0,7000],
       velocity: [0,-300],
       engine_number:9,
+      ballast:0,
       max_engines: 9,
       angle: 0,
       angular_velocity: 0,
@@ -64,7 +69,7 @@ var Craft=function(options) {
     this.crash_time=null;
 
     this.mass=18000;
-    this.mass=20000;
+    this.mass+=s.ballast; // ballast
     this.fuel=s.fuel;
 
     if(s.gear_down) {
@@ -96,7 +101,7 @@ var Craft=function(options) {
     this.rocket_body.angle=s.angle;
     this.rocket_body.angularVelocity=s.angular_velocity;
 
-    this.rocket_body.position[1]=25;//-this.offset;
+    this.rocket_body.position[1]+=25;//-this.offset;
     this.updateOffset();
 
     if(s.clamp) this.clamp();
@@ -119,6 +124,7 @@ var Craft=function(options) {
   this.max_throttle=1.03;
 
   this.thrust=0;
+  this.vector=0;
   this.thrust_vector=0; // angle in radians
 
   this.engine_number=9;
@@ -236,14 +242,24 @@ var Craft=function(options) {
 
   this.updateAutopilot=function() {
     if(!this.autopilot.enabled) return;
-    this.engine_number=3;
+    this.engine_number=crange(this.mass,this.rocket_body.mass,this.mass+this.full_fuel/2,1,9);
+    if(this.engine_number < 0.5) this.engine_number=1;
+    else if(this.engine_number > 6) this.engine_number=3;
+    else this.engine_number=9;
+    this.engine_number=1;
 
-    this.autopilot.target_altitude=100;
-    this.autopilot.target_vspeed=crange(100,this.getAltitude()-this.autopilot.target_altitude,-100,-10,10);
+    if(!this.gear_down)
+      this.lowerGear();
+
+    this.autopilot.target_altitude=-5;
+    this.autopilot.target_vspeed=trange(140,this.getAltitude()-this.autopilot.target_altitude,-140,-49,49);
+
+    this.autopilot.target_angle=-crange(-1,this.rocket_body.velocity[0],1,-radians(50),radians(50));
 
     this.throttle=crange(0,this.autopilot.target_vspeed-this.getVspeed(),1,0,1);
-    this.throttle=clamp(0.05,this.throttle,1);
-    this.thrust_vector=(mod((this.angle-Math.PI),Math.PI*2)-Math.PI)*1000;
+    this.throttle=clamp(0.2,this.throttle,1);
+    var lookahead=crange(0,Math.abs(this.rocket_body.angularVelocity),Math.PI,2,100);
+    this.vector=(mod((((this.angle-Math.PI)-this.autopilot.target_angle)+(this.rocket_body.angularVelocity*lookahead)),Math.PI*2)-Math.PI)*100;
   };
 
   this.updateFuel=function() {
@@ -256,7 +272,7 @@ var Craft=function(options) {
 
   this.updateThrust=function() {
     this.engine_number=clamp(1,this.engine_number,this.max_engines);
-    this.thrust_vector=clamp(-1,this.thrust_vector,1);
+    this.vector=clamp(-1,this.vector,1);
     if(this.crashed) this.throttle=0;
     var throttle=trange(0,this.throttle,1,this.min_throttle,this.max_throttle);
     if(this.throttle <= 0.01) throttle=0;
@@ -270,7 +286,9 @@ var Craft=function(options) {
       this.rocket_body.applyForce(force,point);
     }
     var mix=0.7;
+    mix=0.1;
     this.thrust=thrust*(1-mix)+this.thrust*mix;
+    this.thrust_vector=this.vector*(1-mix)+this.thrust_vector*mix;
   };
 
   this.updateLocal=function() {
@@ -298,6 +316,17 @@ var Craft=function(options) {
   }
 
   this.update=function() {
+    if(this.hard_mode) {
+      this.min_throttle=0.58;
+      this.vector_max=radians(1.5);
+      this.crash_velocity=1.2;
+      this.crash_angle=radians(4);
+    } else {
+      this.min_throttle=0;
+      this.vector_max=radians(3);
+      this.crash_velocity=3;
+      this.crash_angle=radians(10);
+    }
     this.throttle=clamp(0,this.throttle,1);
     this.updateCrash();
     this.updateAutopilot();
@@ -305,6 +334,8 @@ var Craft=function(options) {
     this.updateMass();
     this.updateThrust();
     this.updateLocal();
+//    var direction=-mod((Math.atan2(this.rocket_body.velocity[0],this.rocket_body.velocity[1])+Math.PI),Math.PI);
+//    this.rocket_body.angularForce+=(direction)*100*Math.abs(distance([0,0],this.rocket_body.velocity));
   };
 
   this.reset();

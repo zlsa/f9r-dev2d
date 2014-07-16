@@ -442,7 +442,6 @@ function canvas_draw_hud(cc) {
 
 function canvas_draw_minimap(cc) {
   if(!prop.ui.minimap.enabled) return;
-  if(prop.canvas.size.width < 400) return;
 
   cc.save();
   
@@ -459,7 +458,9 @@ function canvas_draw_minimap(cc) {
   var factor=prop.ui.minimap.size_factor;
 
 //  cc.translate(0,f(prop.ui.minimap.height/2+(prop.ui.pan[1]+m_to_pixel(prop.craft.offset))*factor));
-  cc.translate(0,f(prop.ui.minimap.height/1.05+(m_to_pixel(prop.craft.offset))*factor));
+  var t=0;
+  if(prop.input.touch.enabled) t=48;
+  cc.translate(0,f(prop.ui.minimap.height/1.05-t+(m_to_pixel(prop.craft.offset))*factor));
 
   cc.beginPath();
   cc.moveTo(0,0);

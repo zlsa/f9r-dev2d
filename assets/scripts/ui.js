@@ -6,7 +6,7 @@ function ui_init_pre() {
 
   prop.ui.minimap.enabled=true;
   prop.ui.minimap.show=true;
-  prop.ui.minimap.size_factor=0.05;
+  prop.ui.minimap.size_factor=0.09;
   prop.ui.minimap.scale=0.5;
   prop.ui.minimap.width=300;
   prop.ui.minimap.height=200;
@@ -43,8 +43,10 @@ function ui_update() {
   prop.ui.pan[0]=m_to_pixel(prop.craft.pos[0]);
   prop.ui.pan[1]=m_to_pixel(prop.craft.pos[1]);
 
-  if(prop.canvas.size.width < 700) $("html").addClass("touch-mode");
-
+  if(prop.canvas.size.width < 700) {
+    $("html").addClass("touch-mode");
+    prop.input.touch.enabled=true;
+  }
 }
 
 function ui_help() {

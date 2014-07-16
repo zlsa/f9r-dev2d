@@ -82,15 +82,9 @@ function settings_init() {
   });
   setting_add(["hard mode","enable for realism"],"bool",true,function() {
     if(this.value) {
-      prop.craft.min_throttle=0.7;
-      prop.craft.vector_max=radians(1.5);
-      prop.craft.crash_velocity=2;
-      prop.craft.crash_angle=radians(5);
+      prop.craft.hard_mode=true;
     } else {
-      prop.craft.min_throttle=0;
-      prop.craft.vector_max=radians(3);
-      prop.craft.crash_velocity=3;
-      prop.craft.crash_angle=radians(10);
+      prop.craft.hard_mode=false;
     }
   });
 //  setting_add(["allow two engines","allow two engine usage in addition to one and three engines"],"bool",false,function() {
