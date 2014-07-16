@@ -5,6 +5,7 @@ function ui_init_pre() {
   prop.ui.minimap={};
 
   prop.ui.minimap.enabled=true;
+  prop.ui.minimap.show=false;
   prop.ui.minimap.size_factor=0.05;
   prop.ui.minimap.scale=0.5;
   prop.ui.minimap.width=300;
@@ -15,6 +16,12 @@ function ui_init_pre() {
   // if [0,100] you are looking up
   prop.ui.scale=5; // pixels per meter
 
+}
+
+function ui_init() {
+  $("#help-backdrop").click(function() {
+    ui_help_hide();
+  });
 }
 
 function km_to_m(kilometers) {
@@ -38,4 +45,14 @@ function ui_update() {
 
   if(prop.canvas.size.width < 700) $("html").addClass("touch-mode");
 
+}
+
+function ui_help() {
+  $("#help-backdrop").fadeIn(200);
+  $("#help").fadeIn(200);
+}
+
+function ui_help_hide() {
+  $("#help-backdrop").fadeOut(200);
+  $("#help").fadeOut(200);
 }

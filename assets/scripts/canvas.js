@@ -110,20 +110,21 @@ function canvas_draw_pads(cc) {
   cc.save();
   cc.fillStyle="#a42";
   cc.translate(prop.canvas.size.width/2+prop.ui.pan[0]+m_to_pixel(prop.ground.clamp[0]),prop.canvas.size.height/2+prop.ui.pan[1]);
+
   cc.fillRect(-m_to_pixel(2),
               -m_to_pixel(4.0),
               m_to_pixel(4),
               m_to_pixel(6));
-  if(prop.craft.clamped) {
-    cc.fillRect(-m_to_pixel(2.3),
-                -m_to_pixel(6.0),
-                m_to_pixel(1),
-                m_to_pixel(3));
-    cc.fillRect(m_to_pixel(1.3),
-                -m_to_pixel(6.0),
-                m_to_pixel(1),
-                m_to_pixel(3));
-  }
+//  if(prop.craft.clamped) {
+    cc.fillRect(f(-m_to_pixel(2.3)),
+                f(-m_to_pixel(6.0)),
+                f(m_to_pixel(1)),
+                f(m_to_pixel(3)));
+    cc.fillRect(f(m_to_pixel(1.3)),
+                f(-m_to_pixel(6.0)),
+                f(m_to_pixel(1)),
+                f(m_to_pixel(3)));
+//  }
   cc.restore();
 }
 
@@ -169,7 +170,8 @@ function canvas_draw_craft(cc) {
   heatshield_height+=2;
 
   if(prop.craft.crashed) {
-    cc.fillStyle="#f88";
+    var opacity=crange(0,time()-prop.craft.crash_time,3,0,1);
+    cc.fillStyle="rgba(255,120,120,"+opacity+")";
 
     cc.beginPath();
     cc.moveTo(0,    -h/2);
@@ -365,10 +367,15 @@ function canvas_draw_craft(cc) {
   
   cc.lineWidth=1;
   cc.fillStyle="#fff";
-  if(prop.craft.crashed) cc.fillStyle="#f88";
+  cc.fill();
+
+  if(prop.craft.crashed) {
+    var opacity=crange(0,time()-prop.craft.crash_time,3,0,1);
+    cc.fillStyle="rgba(255,120,120,"+opacity+")";
+    cc.fill();
+  }
   cc.strokeStyle="#222";
 
-  cc.fill();
   cc.stroke();
 
 }
@@ -377,16 +384,14 @@ function canvas_draw_hud(cc) {
   cc.font="14px bold monospace, 'Ubuntu Mono'";
   cc.textAlign="center";
   if(prop.craft.crashed) {
-    var opacity=crange(0,time()-prop.craft.crash_time,10,0,0.5);
-    cc.fillStyle="rgba(0,0,0,"+opacity+")";
+    var opacity=crange(0,time()-prop.craft.crash_time,10,0,0.6);
+    cc.fillStyle="rgba(128,0,0,"+opacity+")";
     cc.fillRect(0,0,prop.canvas.size.width,prop.canvas.size.height);
   }
 
   cc.fillStyle="rgba(0,0,0,0.4)";
   cc.fillRect(prop.canvas.size.width/2-300,9,600,30);
-  if(prop.canvas.size.width > 700)
-    cc.fillRect(0,prop.canvas.size.height-37,prop.canvas.size.width,30);
-  
+
   if(prop.craft.crashed) {
     cc.fillStyle="rgba(191,32,0,0.8)";
     cc.fillRect(prop.canvas.size.width/2-300,prop.canvas.size.height/2-15,600,30);
@@ -402,13 +407,9 @@ function canvas_draw_hud(cc) {
   // hspeed
   cc.fillText("h/s "+(-prop.craft.rocket_body.velocity[0]+0.1).toFixed(0)+"m/s",prop.canvas.size.width/2+100,30);
 
-  // help
-  if(prop.canvas.size.width > 700)
-    cc.fillText("keys: throttle: up, down, and 'x'; vector: left, right; gear: 'g'; unclamp: space; number of engines enabled: number keys ("+prop.craft.engine_number.toString()+")",prop.canvas.size.width/2,prop.canvas.size.height-17);
-
   // crashed
   var reset_message="press 'r' to reset";
-  if(prop.canvas.size.width < 700) reset_message="press the reset button";
+  if(prop.input.touch.enabled) reset_message="press the reset button";
   if(prop.craft.crashed)
     cc.fillText("you crashed the test rig. "+reset_message,prop.canvas.size.width/2,prop.canvas.size.height/2+5);
 
@@ -423,17 +424,17 @@ function canvas_draw_minimap(cc) {
   cc.fillStyle="#000";
   cc.strokeStyle="#000";
 
-  cc.globalAlpha=0.5;
+  cc.globalAlpha=0.05;
+  if(prop.craft.crashed)
+    cc.globalAlpha=crange(0,time()-prop.craft.crash_time,3,0.05,0.002);
+
+  if(prop.ui.minimap.show) cc.globalAlpha*=12;
 
   cc.beginPath();
   cc.rect(0,0,prop.ui.minimap.width,prop.ui.minimap.height);
   cc.clip();
 
   cc.save();
-
-  function f(n) {
-    return Math.floor(n);
-  }
 
   var factor=prop.ui.minimap.size_factor;
 
@@ -468,6 +469,7 @@ function canvas_draw_minimap(cc) {
   var angle=prop.craft.angle;
   
   cc.lineTo(sin(angle)*l,-cos(angle)*l);
+  cc.globalAlpha=0.7;
 
   cc.stroke();
 

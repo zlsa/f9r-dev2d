@@ -31,16 +31,24 @@ function input_init_pre() {
     c:67,
     d:68,
     g:71,
+    h:72,
+    i:73,
+    j:74,
+    k:75,
+    l:76,
+    m:77,
     r:82,
     x:88,
+    y:89,
+    z:90,
     left:37,
     up:38,
     right:39,
     down:40,
-    1: 49,
-    2: 50,
-    3: 51,
-    9: 57,
+    1:49,
+    2:50,
+    3:51,
+    9:57,
   };
 }
 
@@ -144,6 +152,12 @@ function input_update_pre() {
   var flip=1;
   if(prop.input.vector_flip) flip=-1;
   var t=4; // the speed of full left-right gimbal
+
+  if(prop.input.keys[prop.input.keysym.z]) {
+    prop.ui.minimap.show=true;
+  } else {
+    prop.ui.minimap.show=false;
+  }
 
   if(prop.input.keys[prop.input.keysym.left]) {
     prop.craft.thrust_vector -= t*delta()*flip;

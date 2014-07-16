@@ -2,6 +2,7 @@
 @import "reset.css";
 @import "canvas.css";
 @import "settings.css";
+@import "help.css";
 
 html,body {
   height: 100%;

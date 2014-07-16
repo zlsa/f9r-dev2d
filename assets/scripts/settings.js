@@ -18,7 +18,7 @@ var Setting=function(options) {
     this.callback();
   }
 
-  this.html=$("<div id='"+this.clean()+"' class='setting type-"+this.type+"' title='"+this.tooltip+"'></div>");
+  this.html=$("<div id='setting-"+this.clean()+"' class='setting type-"+this.type+"' title='"+this.tooltip+"'></div>");
   $("#settings").append(this.html);
 
   this.html.append("<span class='name'>"+this.name+"</span>");
@@ -57,6 +57,9 @@ function settings_init_pre() {
 }
 
 function settings_init() {
+  setting_add(["help","key controls and tips"],"button",null,function() {
+    ui_help();
+  });
   setting_add(["reset","reset the simulation"],"button",null,function() {
     craft_reset();
   });
