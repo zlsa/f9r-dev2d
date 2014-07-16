@@ -6,8 +6,7 @@ A 2D F9R-Dev simulator with totally fake numbers to make it feel correct.
 
 CC0. Use it, abuse it.
 
-Also licensed under the WTFPL or, at your option, you can pay $2499
-per month for 24/7 support.
+Also (optionally) licensed under the WTFPL.
 
 ## Exceptions
 
@@ -21,3 +20,6 @@ The following files are NOT CC0:
 * [`jquery.min.js`](http://jquery.com/) is licensed under the MIT
   license. Thanks, John Resig and the jQuery team. Even though it's
   bloated, I love you, jQuery.
+
+If I missed an exception, please tell me (with an issue here or via
+[email](mailto:zlsa@outlook.com)).
