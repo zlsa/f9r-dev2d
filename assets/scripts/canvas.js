@@ -446,12 +446,7 @@ function canvas_draw_minimap(cc) {
 
   cc.save();
   
-  cc.fillStyle="#000";
-  cc.strokeStyle="#000";
-
   cc.globalAlpha=0.1;
-  if(prop.craft.crashed)
-    cc.globalAlpha=crange(0,time()-prop.craft.crash_time,3,0.05,0.002);
 
   if(prop.ui.minimap.show) cc.globalAlpha*=6;
 
@@ -463,7 +458,8 @@ function canvas_draw_minimap(cc) {
 
   var factor=prop.ui.minimap.size_factor;
 
-  cc.translate(0,f(prop.ui.minimap.height/2+(prop.ui.pan[1]+m_to_pixel(prop.craft.offset))*factor));
+//  cc.translate(0,f(prop.ui.minimap.height/2+(prop.ui.pan[1]+m_to_pixel(prop.craft.offset))*factor));
+  cc.translate(0,f(prop.ui.minimap.height/1.05+(m_to_pixel(prop.craft.offset))*factor));
 
   cc.beginPath();
   cc.moveTo(0,0);
@@ -472,30 +468,52 @@ function canvas_draw_minimap(cc) {
   cc.lineWidth=2;
 
   cc.save();
+//  cc.translate(f(prop.ui.minimap.width/2+prop.ui.pan[0]*factor),0);
   cc.translate(f(prop.ui.minimap.width/2+prop.ui.pan[0]*factor),0);
 
+  cc.strokeStyle="#fff";
   for(var i=0;i<prop.ground.pads.length;i++) {
     var pad=prop.ground.pads[i];
     var xo=m_to_pixel(pad.x)*factor;
     var yo=0;
-    cc.moveTo(f(xo-m_to_pixel(pad.width/2)*factor),f(yo-m_to_pixel(pad.height)*factor));
+    cc.save();
+    cc.moveTo(f(xo-m_to_pixel(pad.width/2)*factor),f(yo));
+    cc.lineTo(f(xo-m_to_pixel(pad.width/2)*factor),f(yo-m_to_pixel(pad.height)*factor));
     cc.lineTo(f(xo+m_to_pixel(pad.width/2)*factor),f(yo-m_to_pixel(pad.height)*factor));
+    cc.lineTo(f(xo+m_to_pixel(pad.width/2)*factor),f(yo));
+
+    cc.restore();
   }
 
+  cc.lineWidth=4;
+  cc.lineCap="square";
+  cc.stroke();
+
+  cc.lineWidth=2;
+
+  cc.strokeStyle="#000";
   cc.stroke();
 
   cc.restore();
 
   cc.beginPath();
-  cc.strokeStyle="#f33";
   cc.translate(prop.ui.pan[0]*factor+prop.ui.minimap.width/2-m_to_pixel(prop.craft.pos[0])*factor,-m_to_pixel(prop.craft.pos[1]+prop.craft.offset)*factor+5);
   cc.moveTo(0,0);
   var l=m_to_pixel(40)*factor;
   var angle=prop.craft.angle;
   
   cc.lineTo(sin(angle)*l,-cos(angle)*l);
-  cc.globalAlpha=0.7;
+  
+  cc.lineWidth=4;
+  cc.lineCap="round";
+  cc.strokeStyle="#fff";
 
+  cc.stroke();
+
+  cc.lineWidth=2;
+
+  cc.lineCap="butt";
+  cc.strokeStyle="#f33";
   cc.stroke();
 
   cc.restore();

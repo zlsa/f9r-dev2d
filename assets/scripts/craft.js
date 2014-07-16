@@ -219,10 +219,11 @@ var Craft=function(options) {
       this.right_leg_shape.sensor=true;
     }
     this.rocket_body.updateMassProperties();
-    var d=0.15;
+    var d=0.05;
 //    if(this.gear_down) d=0.06;
     this.rocket_body.damping=crange(0,this.getAltitude(),100000,d,0.0);
-    this.rocket_body.angular_damping=crange(0,this.getAltitude(),100000,d,0.0);
+    var speed=distance([0,0],this.rocket_body.velocity);
+    this.rocket_body.angularDamping=crange(0,this.getAltitude(),100000,d,0.0)+crange(0,speed,100,0,0.8);
   };
   
   this.getAltitude=function() {
