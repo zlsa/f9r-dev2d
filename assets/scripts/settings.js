@@ -69,10 +69,8 @@ function settings_init() {
   setting_add(["flip left-right","flip the engine vector direction"],"bool",true,function() {
     if(this.value) {
       prop.input.vector_flip=true;
-      console.log(this.value);
     } else {
       prop.input.vector_flip=false;
-      console.log(this.value);
     }
   });
   setting_add(["minimap","show the minimap"],"bool",true,function() {
