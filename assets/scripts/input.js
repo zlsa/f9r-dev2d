@@ -16,6 +16,8 @@ function input_init_pre() {
     right:3
   };
 
+  prop.input.vector_flip=true;
+
   prop.input.two=false;
 
   prop.input.keys={};
@@ -56,8 +58,6 @@ function input_done() {
 //    e.preventDefault();
 //    return false;
   });
-
-  prop.input.vector_flip=true;
 
   $(window).bind("touchstart",function(event) {
     var position=[event.originalEvent.targetTouches[0].pageX,event.originalEvent.targetTouches[0].pageY];
