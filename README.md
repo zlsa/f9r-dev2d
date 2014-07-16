@@ -1,6 +1,6 @@
-# F9R-Dev2D
+# [F9R-Dev2D](http://zlsa.github.io/f9r-dev2d/)
 
-A 2D F9R-Dev simulator with totally fake numbers to make it feel correct.
+A 2D SpaceX F9R-Dev simulator with totally fake numbers to make it feel correct.
 
 # License
 
