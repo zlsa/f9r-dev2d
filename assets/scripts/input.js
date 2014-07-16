@@ -55,7 +55,7 @@ function input_init_pre() {
 
 function input_done() {
   $(window).keydown(function(e) {
-    console.log(e.which);
+//    console.log(e.which);
     prop.input.keys[e.which]=true;
     if(e.which == 8) {
       e.preventDefault();
@@ -65,7 +65,7 @@ function input_done() {
 
   $(window).keyup(function(e) {
     prop.input.keys[e.which]=false;
-    console.log(e.which);
+//    console.log(e.which);
     input_keyup(e.which);
 //    e.preventDefault();
 //    return false;

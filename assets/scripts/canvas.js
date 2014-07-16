@@ -449,11 +449,11 @@ function canvas_draw_minimap(cc) {
   cc.fillStyle="#000";
   cc.strokeStyle="#000";
 
-  cc.globalAlpha=0.05;
+  cc.globalAlpha=0.1;
   if(prop.craft.crashed)
     cc.globalAlpha=crange(0,time()-prop.craft.crash_time,3,0.05,0.002);
 
-  if(prop.ui.minimap.show) cc.globalAlpha*=12;
+  if(prop.ui.minimap.show) cc.globalAlpha*=6;
 
   cc.beginPath();
   cc.rect(0,0,prop.ui.minimap.width,prop.ui.minimap.height);

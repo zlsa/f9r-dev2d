@@ -5,7 +5,7 @@ function ui_init_pre() {
   prop.ui.minimap={};
 
   prop.ui.minimap.enabled=true;
-  prop.ui.minimap.show=false;
+  prop.ui.minimap.show=true;
   prop.ui.minimap.size_factor=0.05;
   prop.ui.minimap.scale=0.5;
   prop.ui.minimap.width=300;
