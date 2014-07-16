@@ -101,8 +101,8 @@ function input_done() {
   });
 
   $(window).bind("touchend",function(event) {
-//    prop.input.touch.throttle=0;
-//    prop.input.touch.vector=0;
+    prop.input.touch.throttle=0;
+    prop.input.touch.vector=0;
 
     prop.craft.throttle=prop.input.touch.throttle;
     prop.craft.vector=prop.input.touch.vector;
