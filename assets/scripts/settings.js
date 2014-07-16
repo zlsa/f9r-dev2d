@@ -63,9 +63,16 @@ function settings_init() {
   setting_add(["f9r-dev2","nine engines, full fuel"],"button",null,function() {
     craft_reset("f9r-dev2");
   });
-  setting_add(["limit engine thrust to 70%","enable for realism"],"bool",true,function() {
-    if(this.value) prop.craft.min_throttle=0.7;
-    else prop.craft.min_throttle=0;
+  setting_add(["flip left-right","flip the engine vector direction"],"bool",false,function() {
+    if(this.value) prop.input.vector_flip=true;
+    else prop.input.vector_flip=false;
+  });
+  setting_add(["hard mode","enable for realism"],"bool",true,function() {
+    if(this.value) {
+      prop.craft.min_throttle=0.7;
+    } else {
+      prop.craft.min_throttle=0;
+    }
   });
 //  setting_add(["allow two engines","allow two engine usage in addition to one and three engines"],"bool",false,function() {
 //    if(this.value) prop.input.two=true;

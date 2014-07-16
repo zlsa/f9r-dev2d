@@ -40,10 +40,12 @@ function audio_init_sources() {
   prop.audio.sources={};
   var source=prop.audio.context.createBufferSource();
   source.buffer=prop.audio.buffers.engine;
+
   var gain=prop.audio.context.createGain();
   gain.gain.value=0.0;
   source.connect(gain);
   gain.connect(prop.audio.context.destination);
+
   source.loop=true;
   source.start(0);
   prop.audio.gains.engine=gain;
@@ -52,8 +54,10 @@ function audio_init_sources() {
 
 function audio_real_update() {
   var v=1;
-  if(!prop.audio.enabled) v=false;
-  prop.audio.gains.engine.gain.value=crange(0,prop.craft.thrust,prop.craft.thrust_peak[1]*3,0,1)*v;
+  if(!prop.audio.enabled) v=0;
+  prop.audio.gains.engine.gain.value=crange(0,prop.craft.thrust,prop.craft.thrust_peak[1]*6,0,1)*v;
+
+  prop.audio.sources.engine.playbackRate=crange(0,prop.craft.thrust,prop.craft.thrust_peak[1]*prop.craft.engine_number,0.6,0.9);
 }
 
 

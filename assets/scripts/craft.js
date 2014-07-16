@@ -14,7 +14,7 @@ var Craft=function(options) {
       angle: 0,
       angular_velocity: 0,
       fuel: 90000,
-      gear_down:true,
+      gear_down:false,
       clamp:true
     },
     "f9r-dev2": {
@@ -214,8 +214,8 @@ var Craft=function(options) {
       this.right_leg_shape.sensor=true;
     }
     this.rocket_body.updateMassProperties();
-    var d=0.05;
-    if(this.gear_down) d=0.06;
+    var d=0.15;
+//    if(this.gear_down) d=0.06;
     this.rocket_body.damping=crange(0,this.getAltitude(),100000,d,0.0);
     this.rocket_body.angular_damping=crange(0,this.getAltitude(),100000,d,0.0);
   };

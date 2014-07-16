@@ -45,17 +45,19 @@ function input_init_pre() {
 function input_done() {
   $(window).keydown(function(e) {
     prop.input.keys[e.which]=true;
-    e.preventDefault();
-    return false;
+//    e.preventDefault();
+//    return false;
   });
 
   $(window).keyup(function(e) {
     prop.input.keys[e.which]=false;
     console.log(e.which);
     input_keyup(e.which);
-    e.preventDefault();
-    return false;
+//    e.preventDefault();
+//    return false;
   });
+
+  prop.input.vector_flip=false;
 
   $(window).bind("touchstart",function(event) {
     var position=[event.originalEvent.targetTouches[0].pageX,event.originalEvent.targetTouches[0].pageY];
@@ -115,6 +117,7 @@ function input_keyup(keycode) {
 }
 
 function input_update_pre() {
+
   if(prop.input.keys[prop.input.keysym.up]) {
     prop.craft.throttle+=1*delta();
   } else if(prop.input.keys[prop.input.keysym.down]) {
@@ -125,31 +128,39 @@ function input_update_pre() {
   } else if(prop.input.keys[prop.input.keysym.control]) {
     prop.craft.throttle-=1*delta();
   }
+
   if(prop.input.keys[prop.input.keysym.x]) {
     prop.craft.throttle=0;
   }
+
   if(prop.input.keys[prop.input.keysym.a]) {
     prop.craft.autopilot.enabled=true;
   } else {
     prop.craft.autopilot.disabled=true;
   }
-  var t=2; // the number of seconds it takes to vector left to right
-  t*=2;
+
+  var flip=1;
+  if(prop.input.vector_flip) flip=-1;
+  var t=4; // the speed of full left-right gimbal
+
   if(prop.input.keys[prop.input.keysym.left]) {
-    prop.craft.thrust_vector-=t*delta();
+    prop.craft.thrust_vector -= t*delta()*flip;
   } else if(prop.input.keys[prop.input.keysym.right]) {
-    prop.craft.thrust_vector+=t*delta();
+    prop.craft.thrust_vector += t*delta()*flip;
+
   } else if(prop.input.keys[prop.input.keysym.d]) {
-    prop.craft.thrust_vector-=t*delta();
+    prop.craft.thrust_vector -= t*delta()*flip;
   } else if(prop.input.keys[prop.input.keysym.a]) {
-    prop.craft.thrust_vector+=t*delta();
+    prop.craft.thrust_vector += t*delta()*flip;
   } else if(!prop.input.touch.enabled) {
+
     if(prop.craft.thrust_vector > 0.1){
-      prop.craft.thrust_vector-=t*delta();
+      prop.craft.thrust_vector -= t*delta();
     } else if(prop.craft.thrust_vector < -0.1){
-      prop.craft.thrust_vector+=t*delta();
+      prop.craft.thrust_vector += t*delta();
     } else {
-      prop.craft.thrust_vector=0;
+      prop.craft.thrust_vector = 0;
     }
+
   }
 }
