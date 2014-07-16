@@ -386,7 +386,7 @@ function canvas_draw_hud(cc) {
 
   // help
   if(prop.canvas.size.width > 700)
-    cc.fillText("keys: throttle: up, down, and 'x'; vector: left, right; gear: 'g'; number of engines enabled: number keys ("+prop.craft.engine_number.toString()+")",prop.canvas.size.width/2,prop.canvas.size.height-17);
+    cc.fillText("keys: throttle: up, down, and 'x'; vector: left, right; gear: 'g'; unclamp: space; number of engines enabled: number keys ("+prop.craft.engine_number.toString()+")",prop.canvas.size.width/2,prop.canvas.size.height-17);
 
   // crashed
   var reset_message="press 'r' to reset";
