@@ -138,6 +138,7 @@ function canvas_draw_craft(cc) {
   var h=m_to_pixel(42);
 
   var nosecone_height=m_to_pixel(0.8);
+  var nosecone_bend_height=m_to_pixel(0.4);
   var interstage_height=0;
 
   cc.translate(prop.canvas.size.width/2,prop.canvas.size.height/2);
@@ -148,15 +149,24 @@ function canvas_draw_craft(cc) {
 
   if(prop.craft.model == "f9r") {
     nosecone_height=0;
+    nosecone_bend_height=0;
     interstage_height=m_to_pixel(3);
+  }
+
+  if(prop.craft.model == "f9r-dev-high") {
+    nosecone_height=m_to_pixel(3);
+    nosecone_bend_height=m_to_pixel(1.7);
+    interstage_height=m_to_pixel(2);
   }
 
   cc.beginPath();
   cc.moveTo(0,    -h/2-interstage_height);
+  cc.lineTo(w/3,  -h/2+nosecone_bend_height-interstage_height);
   cc.lineTo(w/2,  -h/2+nosecone_height-interstage_height);
   cc.lineTo(w/2,   h/2);
   cc.lineTo(-w/2,  h/2);
   cc.lineTo(-w/2, -h/2+nosecone_height-interstage_height);
+  cc.lineTo(-w/3, -h/2+nosecone_bend_height-interstage_height);
   cc.lineTo(0,    -h/2-interstage_height);
   cc.fill();
 
@@ -181,10 +191,12 @@ function canvas_draw_craft(cc) {
 
     cc.beginPath();
     cc.moveTo(0,    -h/2-interstage_height);
+    cc.lineTo(w/3,  -h/2+nosecone_bend_height-interstage_height);
     cc.lineTo(w/2,  -h/2+nosecone_height-interstage_height);
     cc.lineTo(w/2,   h/2);
     cc.lineTo(-w/2,  h/2);
     cc.lineTo(-w/2, -h/2+nosecone_height-interstage_height);
+    cc.lineTo(-w/3, -h/2+nosecone_bend_height-interstage_height);
     cc.lineTo(0,    -h/2-interstage_height);
     cc.fill();
 
@@ -192,10 +204,12 @@ function canvas_draw_craft(cc) {
 
   cc.beginPath();
   cc.moveTo(0,    -h/2-interstage_height);
+  cc.lineTo(w/3,  -h/2+nosecone_bend_height-interstage_height);
   cc.lineTo(w/2,  -h/2+nosecone_height-interstage_height);
   cc.lineTo(w/2,   h/2);
   cc.lineTo(-w/2,  h/2);
   cc.lineTo(-w/2, -h/2+nosecone_height-interstage_height);
+  cc.lineTo(-w/3, -h/2+nosecone_bend_height-interstage_height);
   cc.lineTo(0,    -h/2-interstage_height);
 
   f=m_to_pixel(36);
@@ -217,6 +231,7 @@ function canvas_draw_craft(cc) {
 
   cc.beginPath();
   cc.moveTo(0,   -h/2-interstage_height);
+  cc.lineTo(w/3, -h/2+nosecone_bend_height-interstage_height);
   cc.lineTo(w/2, -h/2+nosecone_height-interstage_height);
   cc.lineTo(w/2,  h/2);
   cc.lineTo(s,    h/2);

@@ -46,7 +46,7 @@ var Craft=function(options) {
       fuel: 350000,
       gear_down:false,
       clamp:true,
-      model:"f9r-dev"
+      model:"f9r-dev-high"
     },
     "f9r-rtls": {
       position: [-300,10000],
@@ -232,10 +232,12 @@ var Craft=function(options) {
   };
 
   this.raiseGear=function() {
+    if(this.crashed) return;
     this.setGear(false);
   };
 
   this.lowerGear=function() {
+    if(this.crashed) return;
     this.setGear(true);
   };
 
