@@ -228,16 +228,17 @@ var Craft=function(options) {
   };
 
   this.toggleGear=function() {
+    if(this.crashed || this.landed) return;
     this.setGear(!this.gear_down);
   };
 
   this.raiseGear=function() {
-    if(this.crashed) return;
+    if(this.crashed || this.landed) return;
     this.setGear(false);
   };
 
   this.lowerGear=function() {
-    if(this.crashed) return;
+    if(this.crashed || this.landed) return;
     this.setGear(true);
   };
 
