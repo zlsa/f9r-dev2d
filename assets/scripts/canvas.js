@@ -158,7 +158,7 @@ function canvas_draw_craft(cc) {
 
   var heatshield_height=m_to_pixel(3)-2;
 
-  var f=trange(0,prop.craft.fuel,385000,0,m_to_pixel(40));
+  var f=trange(0,prop.craft.fuel,prop.craft.full_fuel,0,m_to_pixel(36));
 
   cc.beginPath();
   cc.moveTo(w/2,  h/2-f-heatshield_height);
@@ -191,6 +191,18 @@ function canvas_draw_craft(cc) {
   cc.lineTo(-w/2,  h/2);
   cc.lineTo(-w/2, -h/2+nosecone_height);
   cc.lineTo(0,    -h/2);
+
+  f=m_to_pixel(36);
+
+  cc.stroke();
+
+  cc.beginPath();
+
+  cc.moveTo( w/2, h/2-f-heatshield_height+2.4);
+  cc.lineTo(-w/2, h/2-f-heatshield_height+2.4);
+
+  cc.strokeStyle="rgba(0,0,0,0.5)";
+
   cc.stroke();
 
   cc.fillStyle="rgba(0,0,0,0.3)";
@@ -409,8 +421,8 @@ function canvas_draw_hud(cc) {
   cc.font="14px bold monospace, 'Ubuntu Mono'";
   cc.textAlign="center";
   if(prop.craft.crashed) {
-    var opacity=crange(0,time()-prop.craft.crash_time,10,0,0.6);
-    cc.fillStyle="rgba(128,0,0,"+opacity+")";
+    var opacity=crange(0,time()-prop.craft.crash_time,1,0,0.2);
+    cc.fillStyle="rgba(0,0,0,"+opacity+")";
     cc.fillRect(0,0,prop.canvas.size.width,prop.canvas.size.height);
   }
 
@@ -427,16 +439,46 @@ function canvas_draw_hud(cc) {
   cc.fillText("alt "+prop.craft.getAltitude().toFixed(0)+"m",prop.canvas.size.width/2,30);
 
   // vspeed
-  cc.fillText("v/s "+(prop.craft.rocket_body.velocity[1]+0.1).toFixed(0)+"m/s",prop.canvas.size.width/2-100,30);
+  cc.fillText("v/s "+(prop.craft.rocket_body.velocity[1]+0.1).toFixed(0)+"m/s",prop.canvas.size.width/2-80,30);
 
   // hspeed
-  cc.fillText("h/s "+(-prop.craft.rocket_body.velocity[0]+0.1).toFixed(0)+"m/s",prop.canvas.size.width/2+100,30);
+  cc.fillText("h/s "+(-prop.craft.rocket_body.velocity[0]+0.1).toFixed(0)+"m/s",prop.canvas.size.width/2+80,30);
 
+  // fuel burn remaining
+  cc.save();
+  if(((prop.craft.fuel/prop.craft.full_fuel)*100) < 7) cc.fillStyle="#811";
+  cc.fillText("fuel remaining "+((prop.craft.fuel/prop.craft.full_fuel)*100).toFixed(1)+"%",prop.canvas.size.width/2+200,30);
+  cc.restore();
+
+  function fx(n,a) {
+    if(!a) a=2;
+    n=n.toFixed(0);
+    n="0000"+n;
+    return n.substr(n.length-a,a);
+  }
+  
   // crashed
   var reset_message="press 'r' to reset";
   if(prop.input.touch.enabled) reset_message="press the reset button";
   if(prop.craft.crashed)
     cc.fillText("you crashed the test rig. "+reset_message,prop.canvas.size.width/2,prop.canvas.size.height/2+5);
+
+  if(!prop.craft.clamped) {
+    if(prop.craft.crashed) cc.fillStyle="#811";
+    else if(prop.craft.landed) cc.fillStyle="#8f8";
+    if(prop.craft.crashed || prop.craft.landed) {
+      if(time()%1 < 0.4) cc.fillStyle="transparent";
+    }
+  }
+
+  var met={}
+  met.seconds=fx(prop.craft.getMissionTime()%60);
+  met.minutes=fx((prop.craft.getMissionTime()/60)%60);
+  met.hours=fx((prop.craft.getMissionTime()/60/60));
+  met.milliseconds=fx((prop.craft.getMissionTime()*1000)%1000,3);
+
+  // met
+  cc.fillText("met "+met.hours+":"+met.minutes+":"+met.seconds+"."+met.milliseconds,prop.canvas.size.width/2-200,30);
 
 }
 
@@ -460,7 +502,8 @@ function canvas_draw_minimap(cc) {
 //  cc.translate(0,f(prop.ui.minimap.height/2+(prop.ui.pan[1]+m_to_pixel(prop.craft.offset))*factor));
   var t=0;
   if(prop.input.touch.enabled) t=48;
-  cc.translate(0,f(prop.ui.minimap.height/1.05-t+(m_to_pixel(prop.craft.offset))*factor));
+//  cc.translate(0,f(prop.ui.minimap.height/1.05-t-(m_to_pixel(prop.craft.offset))*factor));
+  cc.translate(0,f(prop.ui.minimap.height/1.05-t*factor));
 
   cc.beginPath();
   cc.moveTo(0,0);
@@ -498,7 +541,7 @@ function canvas_draw_minimap(cc) {
   cc.restore();
 
   cc.beginPath();
-  cc.translate(prop.ui.pan[0]*factor+prop.ui.minimap.width/2-m_to_pixel(prop.craft.pos[0])*factor,-m_to_pixel(prop.craft.pos[1]+prop.craft.offset)*factor+5);
+  cc.translate(prop.ui.pan[0]*factor+prop.ui.minimap.width/2-m_to_pixel(prop.craft.pos[0])*factor,-m_to_pixel(prop.craft.pos[1]+prop.craft.offset)*factor+7);
   cc.moveTo(0,0);
   var l=m_to_pixel(40)*factor;
   var angle=prop.craft.angle;

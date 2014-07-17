@@ -3,6 +3,15 @@ var Craft=function(options) {
   this.pos=[0,0];
   this.angle=0;
 
+  this.landed=false;
+
+  this.mission_start=0;
+  this.mission_end=0;
+  this.mission_elapsed=0;
+  this.mission=false;
+
+  this.leg_max_mass=29000; // almost a fully fueled dev-1
+
   this.scenario="f9r-dev1";
 
   this.crash_velocity=2;
@@ -71,6 +80,13 @@ var Craft=function(options) {
     this.mass=18000;
     this.mass+=s.ballast; // ballast
     this.fuel=s.fuel;
+
+    this.mission_start=0;
+    this.mission_end=0;
+    this.mission_elapsed=0;
+    this.mission=false;
+
+    this.thrust=0;
 
     if(s.gear_down) {
       this.gear_down=true;
@@ -179,8 +195,27 @@ var Craft=function(options) {
 
   this.unclamp=function() {
     if(!this.clamped) return;
+    this.startMission();
     this.clamped=false;
     this.rocket_body.position=[-prop.ground.clamp[0],prop.ground.clamp[1]+26-this.offset];
+  };
+
+  this.startMission=function() {
+    if(this.mission == true) return;
+    this.mission=true;
+    this.mission_start=time();
+  };
+
+  this.stopMission=function() {
+    if(this.mission == false) return;
+    this.mission=false;
+    this.mission_elapsed+=time()-this.mission_start;
+    this.mission_start=0;
+  };
+
+  this.getMissionTime=function() {
+    if(!this.mission) return this.mission_elapsed;
+    return this.mission_elapsed+(time()-this.mission_start);
   };
 
   this.toggleGear=function() {
@@ -233,7 +268,7 @@ var Craft=function(options) {
   };
   
   this.getAltitude=function() {
-    return this.pos[1]+this.offset-26;
+    return this.pos[1]+this.offset-22;
   };
 
   this.getVspeed=function() {
@@ -277,6 +312,10 @@ var Craft=function(options) {
     var throttle=trange(0,this.throttle,1,this.min_throttle,this.max_throttle);
     if(this.throttle <= 0.01) throttle=0;
     var thrust=trange(0,this.getAltitude(),100000,this.thrust_peak[0],this.thrust_peak[1])*this.engine_number*throttle;
+    if(this.crashed) {
+      this.thrust=0;
+      thrust=0;
+    }
     if(this.fuel <= 0) thrust=0;
     var v=(this.thrust_vector*this.vector_max)+this.angle;
     var force=[-sin(v)*this.thrust,cos(v)*this.thrust];
@@ -300,7 +339,10 @@ var Craft=function(options) {
   this.updateCrash=function() {
     if(time()-this.start < 1) return; // do not crash in the first few seconds
     if(!this.crashed) {
+      this.landed=false;
       if(this.rocket_body.overlaps(prop.physics.ground_body)) { // touching ground
+        this.landed=true;
+        if(this.mass > this.leg_max_mass && this.hard_mode) this.crashed=true; // too much weight on legs
         if(!this.gear_down) this.crashed=true; // crash if gear up
         if(distance([0,0],this.rocket_body.velocity) > this.crash_velocity) {
           this.crashed=true;
@@ -317,7 +359,7 @@ var Craft=function(options) {
 
   this.update=function() {
     if(this.hard_mode) {
-      this.min_throttle=0.58;
+      this.min_throttle=0.6;
       this.vector_max=radians(1.5);
       this.crash_velocity=1.2;
       this.crash_angle=radians(4);
@@ -325,7 +367,7 @@ var Craft=function(options) {
       this.min_throttle=0;
       this.vector_max=radians(3);
       this.crash_velocity=3;
-      this.crash_angle=radians(10);
+      this.crash_angle=radians(6);
     }
     this.throttle=clamp(0,this.throttle,1);
     this.updateCrash();
@@ -334,6 +376,10 @@ var Craft=function(options) {
     this.updateMass();
     this.updateThrust();
     this.updateLocal();
+
+    if(this.landed || this.crashed || this.clamped) this.stopMission();
+    else if(!this.landed && !this.crashed && !this.clamped) this.startMission();
+
 //    var direction=-mod((Math.atan2(this.rocket_body.velocity[0],this.rocket_body.velocity[1])+Math.PI),Math.PI);
 //    this.rocket_body.angularForce+=(direction)*100*Math.abs(distance([0,0],this.rocket_body.velocity));
   };
