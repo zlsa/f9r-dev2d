@@ -10,6 +10,8 @@ var Craft=function(options) {
   this.mission_elapsed=0;
   this.mission=false;
 
+  this.model="f9r-dev";
+
   this.leg_max_mass=29000; // almost a fully fueled dev-1
 
   this.scenario="f9r-dev1";
@@ -31,6 +33,7 @@ var Craft=function(options) {
       fuel: 90000,
       gear_down:false,
       clamp:true,
+      model:"f9r-dev"
     },
     "f9r-dev2": {
       position: [0,0],
@@ -42,19 +45,21 @@ var Craft=function(options) {
       angular_velocity: 0,
       fuel: 350000,
       gear_down:false,
-      clamp:true
+      clamp:true,
+      model:"f9r-dev"
     },
-    "f9-reentry": {
-      position: [0,7000],
-      velocity: [0,-300],
-      engine_number:9,
-      ballast:0,
-      max_engines: 9,
-      angle: 0,
-      angular_velocity: 0,
-      fuel: 30000,
+    "f9r-rtls": {
+      position: [-300,10000],
+      velocity: [15,-300],
+      engine_number: 1,
+      ballast: 0,
+      max_engines: 1,
+      angle: radians(3),
+      angular_velocity: radians(-0.8),
+      fuel: 6000,
       gear_down:false,
-      clamp:false
+      clamp:false,
+      model:"f9r"
     }
   };
 
@@ -80,6 +85,8 @@ var Craft=function(options) {
     this.mass=18000;
     this.mass+=s.ballast; // ballast
     this.fuel=s.fuel;
+
+    this.model=s.model;
 
     this.mission_start=0;
     this.mission_end=0;
@@ -119,8 +126,10 @@ var Craft=function(options) {
 
     this.rocket_body.position[1]+=25;//-this.offset;
     this.updateOffset();
-
+    
     if(s.clamp) this.clamp();
+
+    if(!s.clamp) this.startMission();
 
     this.update();
   
@@ -264,7 +273,7 @@ var Craft=function(options) {
 //    if(this.gear_down) d=0.06;
     this.rocket_body.damping=crange(0,this.getAltitude(),100000,d,0.0);
     var speed=distance([0,0],this.rocket_body.velocity);
-    this.rocket_body.angularDamping=crange(0,this.getAltitude(),100000,d,0.0)+crange(0,speed,100,0,0.8);
+    this.rocket_body.angularDamping=crange(0,this.getAltitude(),100000,d,0.0)+crange(0,speed,100,0,0.2);
   };
   
   this.getAltitude=function() {
@@ -287,11 +296,11 @@ var Craft=function(options) {
       this.lowerGear();
 
     this.autopilot.target_altitude=-5;
-    this.autopilot.target_vspeed=trange(140,this.getAltitude()-this.autopilot.target_altitude,-140,-49,49);
+    this.autopilot.target_vspeed=trange(140,this.getAltitude()-this.autopilot.target_altitude,-140,-100,100);
 
     this.autopilot.target_angle=-crange(-1,this.rocket_body.velocity[0],1,-radians(50),radians(50));
 
-    this.throttle=crange(0,this.autopilot.target_vspeed-this.getVspeed(),1,0,1);
+    this.throttle=trange(0,this.autopilot.target_vspeed-this.getVspeed(),10,0,1);
     this.throttle=clamp(0.2,this.throttle,1);
     var lookahead=crange(0,Math.abs(this.rocket_body.angularVelocity),Math.PI,2,100);
     this.vector=(mod((((this.angle-Math.PI)-this.autopilot.target_angle)+(this.rocket_body.angularVelocity*lookahead)),Math.PI*2)-Math.PI)*100;

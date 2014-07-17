@@ -138,6 +138,7 @@ function canvas_draw_craft(cc) {
   var h=m_to_pixel(42);
 
   var nosecone_height=m_to_pixel(0.8);
+  var interstage_height=0;
 
   cc.translate(prop.canvas.size.width/2,prop.canvas.size.height/2);
 //  cc.translate(m_to_pixel(prop.craft.pos[0]),-m_to_pixel(prop.craft.pos[1]));
@@ -145,13 +146,18 @@ function canvas_draw_craft(cc) {
   cc.translate(0,-m_to_pixel(prop.craft.offset)-m_to_pixel(0.5));
 //  cc.translate(prop.ui.pan[0],-prop.ui.pan[1]);
 
+  if(prop.craft.model == "f9r") {
+    nosecone_height=0;
+    interstage_height=m_to_pixel(3);
+  }
+
   cc.beginPath();
-  cc.moveTo(0,    -h/2);
-  cc.lineTo(w/2,  -h/2+nosecone_height);
+  cc.moveTo(0,    -h/2-interstage_height);
+  cc.lineTo(w/2,  -h/2+nosecone_height-interstage_height);
   cc.lineTo(w/2,   h/2);
   cc.lineTo(-w/2,  h/2);
-  cc.lineTo(-w/2, -h/2+nosecone_height);
-  cc.lineTo(0,    -h/2);
+  cc.lineTo(-w/2, -h/2+nosecone_height-interstage_height);
+  cc.lineTo(0,    -h/2-interstage_height);
   cc.fill();
 
   cc.fillStyle="#468";
@@ -174,23 +180,23 @@ function canvas_draw_craft(cc) {
     cc.fillStyle="rgba(255,120,120,"+opacity+")";
 
     cc.beginPath();
-    cc.moveTo(0,    -h/2);
-    cc.lineTo(w/2,  -h/2+nosecone_height);
+    cc.moveTo(0,    -h/2-interstage_height);
+    cc.lineTo(w/2,  -h/2+nosecone_height-interstage_height);
     cc.lineTo(w/2,   h/2);
     cc.lineTo(-w/2,  h/2);
-    cc.lineTo(-w/2, -h/2+nosecone_height);
-    cc.lineTo(0,    -h/2);
+    cc.lineTo(-w/2, -h/2+nosecone_height-interstage_height);
+    cc.lineTo(0,    -h/2-interstage_height);
     cc.fill();
 
   }
 
   cc.beginPath();
-  cc.moveTo(0,    -h/2);
-  cc.lineTo(w/2,  -h/2+nosecone_height);
+  cc.moveTo(0,    -h/2-interstage_height);
+  cc.lineTo(w/2,  -h/2+nosecone_height-interstage_height);
   cc.lineTo(w/2,   h/2);
   cc.lineTo(-w/2,  h/2);
-  cc.lineTo(-w/2, -h/2+nosecone_height);
-  cc.lineTo(0,    -h/2);
+  cc.lineTo(-w/2, -h/2+nosecone_height-interstage_height);
+  cc.lineTo(0,    -h/2-interstage_height);
 
   f=m_to_pixel(36);
 
@@ -210,12 +216,12 @@ function canvas_draw_craft(cc) {
   var s=w/2/3;
 
   cc.beginPath();
-  cc.moveTo(0,   -h/2);
-  cc.lineTo(w/2, -h/2+nosecone_height);
+  cc.moveTo(0,   -h/2-interstage_height);
+  cc.lineTo(w/2, -h/2+nosecone_height-interstage_height);
   cc.lineTo(w/2,  h/2);
   cc.lineTo(s,    h/2);
-  cc.lineTo(s,   -h/2+nosecone_height);
-  cc.lineTo(0,   -h/2);
+  cc.lineTo(s,   -h/2+nosecone_height-interstage_height);
+  cc.lineTo(0,   -h/2-interstage_height);
   cc.fill();
 
   cc.lineWidth=2;
@@ -445,10 +451,7 @@ function canvas_draw_hud(cc) {
   cc.fillText("h/s "+(-prop.craft.rocket_body.velocity[0]+0.1).toFixed(0)+"m/s",prop.canvas.size.width/2+80,30);
 
   // fuel burn remaining
-  cc.save();
-  if(((prop.craft.fuel/prop.craft.full_fuel)*100) < 7) cc.fillStyle="#811";
   cc.fillText("fuel remaining "+((prop.craft.fuel/prop.craft.full_fuel)*100).toFixed(1)+"%",prop.canvas.size.width/2+200,30);
-  cc.restore();
 
   function fx(n,a) {
     if(!a) a=2;
