@@ -234,7 +234,7 @@ function canvas_draw_craft(cc) {
     cc.lineTo(e+force[0],h/2+force[1]);
   }
 
-  if(prop.craft.engine_number >= 5 && false) {
+  if(prop.craft.engine_number >= 5) {
     var e=m_to_pixel(0.5);
     cc.moveTo(-e,h/2);
     cc.lineTo(-e+force[0],h/2+force[1]);
@@ -267,7 +267,7 @@ function canvas_draw_craft(cc) {
   }
 
 
-  if(prop.craft.engine_number >= 5) {
+  if(prop.craft.engine_number >= 5 && false) {
     var e=m_to_pixel(0.5);
     cc.moveTo(-e,h/2);
     cc.lineTo(-e+force[0],h/2+force[1]);
