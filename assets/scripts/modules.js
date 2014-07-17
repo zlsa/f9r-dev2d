@@ -241,7 +241,7 @@ function update() {
   call_module("*","update");
   call_module("*","update_post");
   if(UPDATE)
-//    setTimeout(update,100);
+//    setTimeout(update,1000/60);
     requestAnimationFrame(update);
   prop.time.frames+=1;
   prop.time.frame.count+=1;

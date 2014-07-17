@@ -115,7 +115,7 @@ var Craft=function(options) {
   this.thrust_peak=[6540,7160];
 
   // kg of fuel per second of a single engine at sea level and in a vacuum
-  this.fuel_flow=[600,450];
+  this.fuel_flow=[240,280];
   
   // max engine vector
   this.vector_max=radians(5);
@@ -286,7 +286,7 @@ var Craft=function(options) {
       this.rocket_body.applyForce(force,point);
     }
     var mix=0.7;
-    mix=0.1;
+    mix=0.9;
     this.thrust=thrust*(1-mix)+this.thrust*mix;
     this.thrust_vector=this.vector*(1-mix)+this.thrust_vector*mix;
   };
