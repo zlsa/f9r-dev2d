@@ -8,7 +8,7 @@ var Craft=function(options) {
   this.crash_velocity=2;
   this.crash_angle=radians(5);
 
-  this.hard_mode=true;
+  this.hard_mode=false;
 
   this.scenarios={
     "f9r-dev1": {

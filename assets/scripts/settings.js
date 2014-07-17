@@ -80,7 +80,7 @@ function settings_init() {
     if(this.value) prop.ui.minimap.enabled=true;
     else prop.ui.minimap.enabled=false;
   });
-  setting_add(["hard mode","enable for realism"],"bool",true,function() {
+  setting_add(["hard mode","enable for realism"],"bool",false,function() {
     if(this.value) {
       prop.craft.hard_mode=true;
     } else {
