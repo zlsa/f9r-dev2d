@@ -154,8 +154,8 @@ function canvas_draw_craft(cc) {
   }
 
   if(prop.craft.model == "f9r-dev-high") {
-    nosecone_height=m_to_pixel(3);
-    nosecone_bend_height=m_to_pixel(1.7);
+    nosecone_height=m_to_pixel(1.2);
+    nosecone_bend_height=m_to_pixel(0.3);
     interstage_height=m_to_pixel(2);
   }
 
