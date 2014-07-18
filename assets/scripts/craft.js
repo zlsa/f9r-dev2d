@@ -60,6 +60,19 @@ var Craft=function(options) {
       gear_down:false,
       clamp:false,
       model:"f9r"
+    },
+    "f9r-boostback": {
+      position: [-100000,80000],
+      velocity: [-1000,400],
+      engine_number: 3,
+      ballast: 0,
+      max_engines: 3,
+      angle: radians(70),
+      angular_velocity: radians(0.1),
+      fuel: 20000,
+      gear_down:false,
+      clamp:false,
+      model:"f9r"
     }
   };
 
@@ -68,6 +81,11 @@ var Craft=function(options) {
   this.autopilot={
     enabled: false
   };
+
+  this.rcs_enabled=false;
+  this.rcs_force=0;
+  this.rcs_fuel=1000;
+  this.rcs_full_fuel=1000;
 
   this.clamped=false;
   
@@ -92,6 +110,9 @@ var Craft=function(options) {
     this.mission_end=0;
     this.mission_elapsed=0;
     this.mission=false;
+
+    this.rcs_enabled=false;
+    this.rcs_fuel=1000;
 
     this.thrust=0;
 
@@ -310,6 +331,8 @@ var Craft=function(options) {
   };
 
   this.updateFuel=function() {
+//    this.rcs_fuel-=Math.abs(this.rcs_force)*10000;
+
     if(this.throttle < 0.01) return;
     var single_engine_fuel_flow=trange(0,this.getAltitude(),100000,this.fuel_flow[0],this.fuel_flow[1]);
     var fuel_flow=single_engine_fuel_flow*crange(0,this.throttle,1,this.min_throttle,this.max_throttle)*this.engine_number*delta();
@@ -318,8 +341,13 @@ var Craft=function(options) {
   };
 
   this.updateThrust=function() {
+    // MAIN ENGINES
     this.engine_number=clamp(1,this.engine_number,this.max_engines);
+    
+    // VECTOR
     this.vector=clamp(-1,this.vector,1);
+
+    // to fix GUI
     if(this.crashed) this.throttle=0;
     var throttle=trange(0,this.throttle,1,this.min_throttle,this.max_throttle);
     if(this.throttle <= 0.01) throttle=0;
@@ -340,6 +368,11 @@ var Craft=function(options) {
     mix=0.9;
     this.thrust=thrust*(1-mix)+this.thrust*mix;
     this.thrust_vector=this.vector*(1-mix)+this.thrust_vector*mix;
+
+    // RCS
+
+//    this.rcs_force=this.thrust_vector;
+//    this.rocket_body.angularForce=this.rcs_force*1000;
   };
 
   this.updateLocal=function() {
