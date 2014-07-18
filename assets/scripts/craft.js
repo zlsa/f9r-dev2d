@@ -30,6 +30,7 @@ var Craft=function(options) {
       max_engines: 3,
       angle: 0,
       angular_velocity: 0,
+      rcs_fuel:0,
       fuel: 90000,
       gear_down:false,
       clamp:true,
@@ -43,6 +44,7 @@ var Craft=function(options) {
       max_engines: 9,
       angle: 0,
       angular_velocity: 0,
+      rcs_fuel:1000,
       fuel: 350000,
       gear_down:false,
       clamp:true,
@@ -56,6 +58,7 @@ var Craft=function(options) {
       max_engines: 1,
       angle: radians(3),
       angular_velocity: radians(-0.8),
+      rcs_fuel:300,
       fuel: 6000,
       gear_down:false,
       clamp:false,
@@ -63,12 +66,13 @@ var Craft=function(options) {
     },
     "f9r-boostback": {
       position: [-100000,80000],
-      velocity: [-1000,400],
+      velocity: [-5000,400],
       engine_number: 3,
       ballast: 0,
       max_engines: 3,
       angle: radians(70),
       angular_velocity: radians(0.1),
+      rcs_fuel:1000,
       fuel: 20000,
       gear_down:false,
       clamp:false,
@@ -103,6 +107,7 @@ var Craft=function(options) {
     this.mass=18000;
     this.mass+=s.ballast; // ballast
     this.fuel=s.fuel;
+    this.rcs_fuel=s.rcs_fuel;
 
     this.model=s.model;
 
@@ -297,7 +302,7 @@ var Craft=function(options) {
 //    if(this.gear_down) d=0.06;
     this.rocket_body.damping=crange(0,this.getAltitude(),100000,d,0.0);
     var speed=distance([0,0],this.rocket_body.velocity);
-    this.rocket_body.angularDamping=crange(0,this.getAltitude(),100000,d,0.0)+crange(0,speed,100,0,0.2);
+    this.rocket_body.angularDamping=crange(0,this.getAltitude(),900000,d,0.01);
   };
   
   this.getAltitude=function() {
@@ -331,7 +336,7 @@ var Craft=function(options) {
   };
 
   this.updateFuel=function() {
-//    this.rcs_fuel-=Math.abs(this.rcs_force)*10000;
+    this.rcs_fuel-=Math.abs(this.rcs_force)*delta()*(1000/10); // about 10 second RCS time
 
     if(this.throttle < 0.01) return;
     var single_engine_fuel_flow=trange(0,this.getAltitude(),100000,this.fuel_flow[0],this.fuel_flow[1]);
@@ -369,10 +374,15 @@ var Craft=function(options) {
     this.thrust=thrust*(1-mix)+this.thrust*mix;
     this.thrust_vector=this.vector*(1-mix)+this.thrust_vector*mix;
 
-    // RCS
+    this.rcs_enabled=false;
+    if(this.thrust < 100 && !this.crashed && this.rcs_fuel > 0 && !this.clamped && this.getAltitude() > 5000) this.rcs_enabled=true;
 
-//    this.rcs_force=this.thrust_vector;
-//    this.rocket_body.angularForce=this.rcs_force*1000;
+    // RCS
+    
+    if(!this.rcs_enabled) return;
+
+    this.rcs_force=this.vector;
+    this.rocket_body.angularForce=this.rcs_force*1000;
   };
 
   this.updateLocal=function() {
@@ -405,12 +415,12 @@ var Craft=function(options) {
   this.update=function() {
     if(this.hard_mode) {
       this.min_throttle=0.6;
-      this.vector_max=radians(1.5);
+      this.vector_max=radians(0.5);
       this.crash_velocity=1.2;
       this.crash_angle=radians(4);
     } else {
       this.min_throttle=0;
-      this.vector_max=radians(3);
+      this.vector_max=radians(2);
       this.crash_velocity=3;
       this.crash_angle=radians(6);
     }

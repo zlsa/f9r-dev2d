@@ -169,9 +169,9 @@ function input_update_pre() {
     prop.craft.vector = 1*flip;
 
   } else if(prop.input.keys[prop.input.keysym.d]) {
-    prop.craft.vector = -1*flip;
-  } else if(prop.input.keys[prop.input.keysym.a]) {
     prop.craft.vector = 1*flip;
+  } else if(prop.input.keys[prop.input.keysym.a]) {
+    prop.craft.vector = -1*flip;
   } else if(!prop.input.touch.enabled) {
     prop.craft.vector = 0;
   }
