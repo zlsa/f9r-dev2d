@@ -4,10 +4,10 @@ function canvas_init_pre() {
 
   prop.canvas.images={};
 
-  prop.canvas.images.logo=new Image();
-  prop.canvas.images.logo.src="assets/images/logo.png";
-  prop.canvas.images.logo_fuel=new Image();
-  prop.canvas.images.logo_fuel.src="assets/images/logo-fuel.png";
+//  prop.canvas.images.logo=new Image();
+//  prop.canvas.images.logo.src="assets/images/logo.png";
+//  prop.canvas.images.logo_fuel=new Image();
+//  prop.canvas.images.logo_fuel.src="assets/images/logo-fuel.png";
 
   prop.canvas.contexts={};
 
