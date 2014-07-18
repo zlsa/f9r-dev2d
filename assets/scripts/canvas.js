@@ -2,6 +2,13 @@
 function canvas_init_pre() {
   prop.canvas={};
 
+  prop.canvas.images={};
+
+  prop.canvas.images.logo=new Image();
+  prop.canvas.images.logo.src="assets/images/logo.png";
+  prop.canvas.images.logo_fuel=new Image();
+  prop.canvas.images.logo_fuel.src="assets/images/logo-fuel.png";
+
   prop.canvas.contexts={};
 
   // resize canvas to fit window?
@@ -134,6 +141,8 @@ function canvas_draw_craft(cc) {
   cc.fillStyle="#fff";
   cc.strokeStyle="#222";
 
+  var logo=false;
+
   var w=m_to_pixel(3.66);
   var h=m_to_pixel(42);
 
@@ -154,8 +163,8 @@ function canvas_draw_craft(cc) {
   }
 
   if(prop.craft.model == "f9r-dev-high") {
-    nosecone_height=m_to_pixel(1.2);
-    nosecone_bend_height=m_to_pixel(0.3);
+    nosecone_height=m_to_pixel(2.5);
+    nosecone_bend_height=m_to_pixel(1.3);
     interstage_height=m_to_pixel(2);
   }
 
@@ -176,12 +185,30 @@ function canvas_draw_craft(cc) {
 
   var f=trange(0,prop.craft.fuel,prop.craft.full_fuel,0,m_to_pixel(36));
 
+  if(logo) {
+    cc.save();
+    cc.beginPath();
+    cc.rect(-w/2,-h/2,w,h);
+    cc.clip();
+    cc.drawImage(prop.canvas.images.logo_fuel,-32,-32);
+    cc.restore();
+  }
+
   cc.beginPath();
   cc.moveTo(w/2,  h/2-f-heatshield_height);
   cc.lineTo(w/2,  h/2-heatshield_height);
   cc.lineTo(-w/2, h/2-heatshield_height);
   cc.lineTo(-w/2, h/2-f-heatshield_height);
   cc.fill();
+
+  if(logo) {
+    cc.save();
+    cc.beginPath();
+    cc.rect(-w/2,h/2-(f+heatshield_height),w,(f+heatshield_height));
+    cc.clip();
+    cc.drawImage(prop.canvas.images.logo,-32,-32);
+    cc.restore();
+  }
 
   heatshield_height+=2;
 
