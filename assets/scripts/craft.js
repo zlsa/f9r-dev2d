@@ -416,13 +416,13 @@ var Craft=function(options) {
     if(this.hard_mode) {
       this.min_throttle=0.6;
       this.vector_max=radians(0.5);
-      this.crash_velocity=1.2;
-      this.crash_angle=radians(4);
+      this.crash_velocity=4.0;
+      this.crash_angle=radians(5);
     } else {
       this.min_throttle=0;
       this.vector_max=radians(2);
-      this.crash_velocity=3;
-      this.crash_angle=radians(6);
+      this.crash_velocity=10.0;
+      this.crash_angle=radians(10);
     }
     this.throttle=clamp(0,this.throttle,1);
     this.updateCrash();
@@ -443,7 +443,7 @@ var Craft=function(options) {
 
 };
 
-function craft_init_pre() {
+function craft_init() {
   prop.craft=new Craft();
 }
 

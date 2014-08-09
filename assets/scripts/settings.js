@@ -56,7 +56,7 @@ function settings_init_pre() {
   prop.settings=[];
 }
 
-function settings_init() {
+function settings_init_post() {
   setting_add(["help","key controls and tips"],"button",null,function() {
     ui_help();
   });

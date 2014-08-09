@@ -11,9 +11,9 @@ var MODULES=[
   "input",
 //  "get",
   "ground",
-  "canvas",
-  "physics",
   "craft",
+  "physics",
+  "canvas",
 //  "load"
 ];
 
