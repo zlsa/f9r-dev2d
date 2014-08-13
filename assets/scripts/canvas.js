@@ -12,7 +12,7 @@ function canvas_init_pre() {
   prop.canvas.images.smoke.src="assets/images/smoke.png";
   
   prop.canvas.particles=new Particles({
-    lifetime: 3,
+    lifetime: 4,
     damping: 0.9,
     number: 10
   });
@@ -71,6 +71,7 @@ function canvas_draw_background(cc) {
   gradient.addColorStop(0.99,"#def");
   gradient.addColorStop(1,"#eef");
   cc.fillStyle=gradient;
+  cc.fillStyle="#eef";
   cc.fillRect(0,0,prop.canvas.size.width,prop.canvas.size.height);
 }
 
@@ -79,12 +80,16 @@ function canvas_draw_particles(cc) {
   for(var i=0;i<prop.canvas.particles.particles.length;i++) {
     var particle=prop.canvas.particles.particles[i];
     if(particle[2] > 0) {
-      var s=crange(0, time() - particle[2], particle[3], 2, 10);
+      var s=crange(0, time() - particle[2], particle[3], 1.5, 10);
       cc.save();
-      cc.globalAlpha=crange(2, s, 3, 0, 1)*(1-s*0.1);
-      cc.globalAlpha*=particle[4];
+      cc.globalAlpha=crange(1.5, s, 3, 0, 1)*(1-s*0.1);
+      cc.globalAlpha*=particle[4]*2;
+      if(cc.globalAlpha < 0.1) {
+        cc.restore();
+        continue;
+      }
       cc.translate(m_to_pixel(particle[0][0]), m_to_pixel(particle[0][1]));
-      cc.rotate(mod((time()+particle[2])*0.2, Math.PI*2));
+      cc.rotate(mod((time()+(particle[2]*1000))*0.2, Math.PI*2));
       cc.scale(s, s);
       cc.drawImage(prop.canvas.images.smoke, -16, -16);
       cc.restore();
@@ -637,7 +642,7 @@ function canvas_draw_minimap(cc) {
 }
 
 function canvas_update_post() {
-  prop.canvas.particles.amount=crange(0,prop.craft.thrust,prop.craft.thrust_peak[1]*6,0,1);
+  prop.canvas.particles.amount=crange(0,prop.craft.thrust,prop.craft.thrust_peak[1],0,1);
   var o=22;
   var a=prop.craft.angle;
   prop.canvas.particles.emitter[0]=-prop.craft.rocket_body.position[0] - (Math.sin(a) * o);
@@ -658,6 +663,10 @@ function canvas_update_post() {
   canvas_draw_background(cc);
   cc.restore();
 
+  cc.save();
+  canvas_draw_particles(cc);
+  cc.restore();
+
 //  var cc=canvas_get("ground");
   cc.save();
 //  canvas_clear(cc);
@@ -670,10 +679,6 @@ function canvas_update_post() {
 //  canvas_clear(cc);
   cc.translate(0,m_to_pixel(prop.craft.offset));
   canvas_draw_pads(cc);
-  cc.restore();
-
-  cc.save();
-  canvas_draw_particles(cc);
   cc.restore();
 
 //  var cc=canvas_get("craft");
