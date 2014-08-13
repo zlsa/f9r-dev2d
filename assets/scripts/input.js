@@ -38,7 +38,13 @@ function input_init_pre() {
     k:75,
     l:76,
     m:77,
+    n:78,
+    o:79,
+    p:80,
+    q:81,
     r:82,
+    s:83,
+    t:84,
     x:88,
     y:89,
     z:90,
@@ -118,6 +124,9 @@ function input_keyup(keycode) {
 
   if(keycode == prop.input.keysym["space"]) {
     prop.craft.unclamp();
+  }
+  if(keycode == prop.input.keysym["q"]) {
+    prop.craft.rcs_enabled = !prop.craft.rcs_enabled;
   }
   if(keycode == prop.input.keysym["r"]) {
     prop.craft.reset();

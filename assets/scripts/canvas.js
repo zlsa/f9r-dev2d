@@ -12,9 +12,9 @@ function canvas_init_pre() {
   prop.canvas.images.smoke.src="assets/images/smoke.png";
   
   prop.canvas.particles=new Particles({
-    lifetime: 4,
-    damping: 0.9,
-    number: 10
+    lifetime: 6,
+    damping: 0.8,
+    number: 120
   });
 
   prop.canvas.contexts={};
@@ -80,9 +80,9 @@ function canvas_draw_particles(cc) {
   for(var i=0;i<prop.canvas.particles.particles.length;i++) {
     var particle=prop.canvas.particles.particles[i];
     if(particle[2] > 0) {
-      var s=crange(0, time() - particle[2], particle[3], 1.5, 10);
+      var s=crange(0, time() - particle[2], particle[3], 3, 20);
       cc.save();
-      cc.globalAlpha=crange(1.5, s, 3, 0, 1)*(1-s*0.1);
+      cc.globalAlpha=scrange(-3, s, 10, 0, 1)*scrange(6, s, 20, 1, 0);
       cc.globalAlpha*=particle[4]*2;
       if(cc.globalAlpha < 0.1) {
         cc.restore();
@@ -633,7 +633,7 @@ function canvas_draw_minimap(cc) {
   cc.lineWidth=2;
 
   cc.lineCap="butt";
-  cc.strokeStyle="#f33";
+  cc.strokeStyle="#38f";
   cc.stroke();
 
   cc.restore();
@@ -654,6 +654,8 @@ function canvas_update_post() {
     prop.canvas.particles.emitter_velocity[0]*=o;
     prop.canvas.particles.emitter_velocity[1]*=o;
   }
+//  prop.canvas.particles.emitter_velocity[0] = -prop.craft.rocket_body.velocity[0];
+//  prop.canvas.particles.emitter_velocity[1] = -prop.craft.rocket_body.velocity[1];
   prop.canvas.particles.tick();
 
   var cc=canvas_get("background");

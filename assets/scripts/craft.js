@@ -12,7 +12,7 @@ var Craft=function(options) {
 
   this.model="f9r-dev";
 
-  this.leg_max_mass=70000; // almost a fully fueled dev-1
+  this.leg_max_mass=80000; // almost a fully fueled dev-1
 
   this.scenario="f9r-dev1";
 
@@ -25,13 +25,13 @@ var Craft=function(options) {
     "f9r-dev1": {
       position: [0,0],
       velocity: [0,0],
-      ballast:5000,
+      ballast:15000,
       engine_number:3,
       max_engines: 3,
       angle: 0,
       angular_velocity: 0,
       rcs_fuel:0,
-      fuel: 70000,
+      fuel: 40000,
       gear_down:false,
       clamp:true,
       model:"f9r-dev"
@@ -51,13 +51,13 @@ var Craft=function(options) {
       model:"f9r-dev-high"
     },
     "f9r-rtls": {
-      position: [-300,10000],
-      velocity: [15,-300],
+      position: [-1000,10000],
+      velocity: [25,-300],
       engine_number: 1,
       ballast: 0,
       max_engines: 1,
-      angle: radians(3),
-      angular_velocity: radians(-0.8),
+      angle: radians(7),
+      angular_velocity: radians(-0.3),
       rcs_fuel:300,
       fuel: 6000,
       gear_down:false,
@@ -336,7 +336,7 @@ var Craft=function(options) {
   };
 
   this.updateFuel=function() {
-    this.rcs_fuel-=Math.abs(this.rcs_force)*delta()*(1000/10); // about 10 second RCS time
+    this.rcs_fuel-=Math.abs(this.rcs_force)*delta()*(1000/50); // about 50 second RCS time
 
     if(this.throttle < 0.01) return;
     var single_engine_fuel_flow=trange(0,this.getAltitude(),100000,this.fuel_flow[0],this.fuel_flow[1]);
@@ -374,15 +374,13 @@ var Craft=function(options) {
     this.thrust=thrust*(1-mix)+this.thrust*mix;
     this.thrust_vector=this.vector*(1-mix)+this.thrust_vector*mix;
 
-    this.rcs_enabled=false;
-    if(this.thrust < 100 && !this.crashed && this.rcs_fuel > 0 && !this.clamped && this.getAltitude() > 5000) this.rcs_enabled=true;
-
     // RCS
     
     if(!this.rcs_enabled) return;
+    if(this.crashed || this.rcs_fuel <= 0 || this.clamped) return;
 
     this.rcs_force=this.vector;
-    this.rocket_body.angularForce=this.rcs_force*1000;
+    this.rocket_body.angularForce=-this.rcs_force*3000;
   };
 
   this.updateLocal=function() {

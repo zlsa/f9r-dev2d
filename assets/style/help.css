@@ -19,11 +19,12 @@
   width: 50%;
   height: 80%;
   padding: 30px 50px;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 h1 {
   font-size: 200%;
+  margin-top: 20px;
   margin-bottom: 20px;
 }
 
