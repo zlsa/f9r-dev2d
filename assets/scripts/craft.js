@@ -66,14 +66,14 @@ var Craft=function(options) {
     },
     "f9r-boostback": {
       position: [-100000,80000],
-      velocity: [-5000,400],
+      velocity: [-800,400],
       engine_number: 3,
       ballast: 0,
       max_engines: 3,
       angle: radians(70),
       angular_velocity: radians(0.1),
       rcs_fuel:1000,
-      fuel: 20000,
+      fuel: 40000,
       gear_down:false,
       clamp:false,
       model:"f9r"
@@ -104,7 +104,7 @@ var Craft=function(options) {
     this.crashed=false;
     this.crash_time=null;
 
-    this.mass=18000;
+    this.mass=16000;
     this.mass+=s.ballast; // ballast
     this.fuel=s.fuel;
     this.rcs_fuel=s.rcs_fuel;
@@ -127,7 +127,7 @@ var Craft=function(options) {
         value:1,
         start_value:1,
         end_value:0,
-        duration:4
+        duration:6
       });
     } else {
       this.gear_down=false;
@@ -135,7 +135,7 @@ var Craft=function(options) {
         value:0,
         start_value:0,
         end_value:1,
-        duration:4
+        duration:6
       });
     }
 //    this.fuel=350000;
@@ -166,7 +166,7 @@ var Craft=function(options) {
   this.thrust_peak=[6340,7160];
 
   // kg of fuel per second of a single engine at sea level and in a vacuum
-  this.fuel_flow=[240,280];
+  this.fuel_flow=[210,240];
   
   // max engine vector
   this.vector_max=radians(5);
@@ -205,7 +205,7 @@ var Craft=function(options) {
     value:1,
     start_value:1,
     end_value:0,
-    duration:4
+    duration:6
   });
 
   prop.physics.world.addBody(this.rocket_body);
@@ -369,9 +369,9 @@ var Craft=function(options) {
       this.rocket_body.toWorldFrame(point,[0,-22]);
       this.rocket_body.applyForce(force,point);
     }
-    var mix=0.7;
-    mix=0.9;
+    var mix=0.6;
     this.thrust=thrust*(1-mix)+this.thrust*mix;
+    mix=0.2;
     this.thrust_vector=this.vector*(1-mix)+this.thrust_vector*mix;
 
     // RCS

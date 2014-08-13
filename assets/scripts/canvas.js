@@ -71,7 +71,7 @@ function canvas_draw_background(cc) {
   gradient.addColorStop(0.99,"#def");
   gradient.addColorStop(1,"#eef");
   cc.fillStyle=gradient;
-  cc.fillStyle="#eef";
+//  cc.fillStyle="#eef";
   cc.fillRect(0,0,prop.canvas.size.width,prop.canvas.size.height);
 }
 
@@ -84,6 +84,7 @@ function canvas_draw_particles(cc) {
       cc.save();
       cc.globalAlpha=scrange(-3, s, 10, 0, 1)*scrange(6, s, 20, 1, 0);
       cc.globalAlpha*=particle[4]*2;
+      cc.globalAlpha*=scrange(0,prop.craft.getAltitude(), 15000, 1, 0);
       if(cc.globalAlpha < 0.1) {
         cc.restore();
         continue;
@@ -159,7 +160,6 @@ function canvas_draw_pads(cc) {
 
 function canvas_draw_craft(cc) {
   cc.fillStyle="#fff";
-  cc.strokeStyle="#222";
 
   var logo=true;
 
@@ -188,6 +188,24 @@ function canvas_draw_craft(cc) {
     interstage_height=m_to_pixel(2);
   }
 
+  var rcs=prop.craft.thrust_vector * m_to_pixel(2);
+  if(prop.craft.rcs_enabled) {
+    if(prop.craft.thrust_vector < 0) rcs-=w/3;
+    if(prop.craft.thrust_vector > 0) rcs+=w/3;
+    cc.beginPath();
+    cc.moveTo(0,    -h/2-interstage_height+m_to_pixel(2.5));
+    cc.lineTo(rcs,  -h/2-interstage_height+m_to_pixel(2.5));
+    cc.lineCap="round";
+    cc.strokeStyle="#ccf";
+    cc.lineWidth=4;
+    cc.stroke();
+    cc.strokeStyle="#fff";
+    cc.lineWidth=2;
+    cc.stroke();
+  }
+
+  cc.lineWidth=1;
+  cc.strokeStyle="#222";
   cc.beginPath();
   cc.moveTo(0,    -h/2-interstage_height);
   cc.lineTo(w/3,  -h/2+nosecone_bend_height-interstage_height);
