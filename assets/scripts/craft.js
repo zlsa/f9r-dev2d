@@ -25,13 +25,13 @@ var Craft=function(options) {
     "f9r-dev1": {
       position: [0,0],
       velocity: [0,0],
-      ballast:15000,
+      ballast:20000,
       engine_number:3,
       max_engines: 3,
       angle: 0,
       angular_velocity: 0,
       rcs_fuel:0,
-      fuel: 40000,
+      fuel: 55000,
       gear_down:false,
       clamp:true,
       model:"f9r-dev"
@@ -65,15 +65,15 @@ var Craft=function(options) {
       model:"f9r"
     },
     "f9r-boostback": {
-      position: [-100000,80000],
-      velocity: [-800,400],
+      position: [-120000,80000],
+      velocity: [-1800,400],
       engine_number: 3,
       ballast: 0,
       max_engines: 3,
       angle: radians(70),
       angular_velocity: radians(0.1),
       rcs_fuel:1000,
-      fuel: 40000,
+      fuel: 35000,
       gear_down:false,
       clamp:false,
       model:"f9r"
@@ -300,9 +300,9 @@ var Craft=function(options) {
     this.rocket_body.updateMassProperties();
     var d=0.05;
 //    if(this.gear_down) d=0.06;
-    this.rocket_body.damping=crange(0,this.getAltitude(),100000,d,0.0);
+    this.rocket_body.damping=crange(0,this.getAltitude(),120000,d,0.0);
     var speed=distance([0,0],this.rocket_body.velocity);
-    this.rocket_body.angularDamping=crange(0,this.getAltitude(),900000,d,0.01);
+    this.rocket_body.angularDamping=crange(0,this.getAltitude(),120000,d,0.01);
   };
   
   this.getAltitude=function() {
@@ -397,7 +397,7 @@ var Craft=function(options) {
         this.landed=true;
         if(this.rocket_body.mass*100 > this.leg_max_mass && this.hard_mode) this.crashed=true; // too much weight on legs
         if(!this.gear_down) this.crashed=true; // crash if gear up
-        if(distance([0,0],this.rocket_body.velocity) > this.crash_velocity) {
+        if(distance([0,0], this.rocket_body.velocity) > this.crash_velocity) {
           this.crashed=true;
         }
         var angle=normalizeAngle(this.rocket_body.angle+Math.PI);
@@ -414,11 +414,11 @@ var Craft=function(options) {
     if(this.hard_mode) {
       this.min_throttle=0.6;
       this.vector_max=radians(0.5);
-      this.crash_velocity=5.0;
+      this.crash_velocity=6.0;
       this.crash_angle=radians(5);
     } else {
       this.min_throttle=0;
-      this.vector_max=radians(2);
+      this.vector_max=radians(1.2);
       this.crash_velocity=12.0;
       this.crash_angle=radians(10);
     }

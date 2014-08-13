@@ -84,8 +84,8 @@ function canvas_draw_particles(cc) {
       cc.save();
       cc.globalAlpha=scrange(-3, s, 10, 0, 1)*scrange(6, s, 20, 1, 0);
       cc.globalAlpha*=particle[4]*2;
-      cc.globalAlpha*=scrange(0,prop.craft.getAltitude(), 15000, 1, 0);
-      if(cc.globalAlpha < 0.1) {
+      cc.globalAlpha*=scrange(0, prop.craft.getAltitude(), 15000, 1, 0);
+      if(cc.globalAlpha < 0.01) {
         cc.restore();
         continue;
       }
