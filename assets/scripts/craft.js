@@ -12,7 +12,7 @@ var Craft=function(options) {
 
   this.model="f9r-dev";
 
-  this.leg_max_mass=29000; // almost a fully fueled dev-1
+  this.leg_max_mass=70000; // almost a fully fueled dev-1
 
   this.scenario="f9r-dev1";
 
@@ -25,13 +25,13 @@ var Craft=function(options) {
     "f9r-dev1": {
       position: [0,0],
       velocity: [0,0],
-      ballast:15000,
+      ballast:5000,
       engine_number:3,
       max_engines: 3,
       angle: 0,
       angular_velocity: 0,
       rcs_fuel:0,
-      fuel: 90000,
+      fuel: 70000,
       gear_down:false,
       clamp:true,
       model:"f9r-dev"
@@ -163,7 +163,7 @@ var Craft=function(options) {
 
   this.full_fuel=350000;
   // kg of thrust
-  this.thrust_peak=[6540,7160];
+  this.thrust_peak=[6340,7160];
 
   // kg of fuel per second of a single engine at sea level and in a vacuum
   this.fuel_flow=[240,280];
@@ -397,7 +397,7 @@ var Craft=function(options) {
       this.landed=false;
       if(this.rocket_body.overlaps(prop.physics.ground_body)) { // touching ground
         this.landed=true;
-        if(this.mass > this.leg_max_mass && this.hard_mode) this.crashed=true; // too much weight on legs
+        if(this.rocket_body.mass*100 > this.leg_max_mass && this.hard_mode) this.crashed=true; // too much weight on legs
         if(!this.gear_down) this.crashed=true; // crash if gear up
         if(distance([0,0],this.rocket_body.velocity) > this.crash_velocity) {
           this.crashed=true;
@@ -416,12 +416,12 @@ var Craft=function(options) {
     if(this.hard_mode) {
       this.min_throttle=0.6;
       this.vector_max=radians(0.5);
-      this.crash_velocity=4.0;
+      this.crash_velocity=5.0;
       this.crash_angle=radians(5);
     } else {
       this.min_throttle=0;
       this.vector_max=radians(2);
-      this.crash_velocity=10.0;
+      this.crash_velocity=12.0;
       this.crash_angle=radians(10);
     }
     this.throttle=clamp(0,this.throttle,1);

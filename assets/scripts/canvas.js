@@ -8,6 +8,14 @@ function canvas_init_pre() {
   prop.canvas.images.logo.src="assets/images/logo.png";
   prop.canvas.images.logo_fuel=new Image();
   prop.canvas.images.logo_fuel.src="assets/images/logo-fuel.png";
+  prop.canvas.images.smoke=new Image();
+  prop.canvas.images.smoke.src="assets/images/smoke.png";
+  
+  prop.canvas.particles=new Particles({
+    lifetime: 3,
+    damping: 0.9,
+    number: 10
+  });
 
   prop.canvas.contexts={};
 
@@ -66,16 +74,23 @@ function canvas_draw_background(cc) {
   cc.fillRect(0,0,prop.canvas.size.width,prop.canvas.size.height);
 }
 
-function canvas_draw_grid(cc) {
-  return;
-  cc.strokeStyle="rgba(0,0,0,0.2)";
-  cc.lineWidth=2;
-  cc.beginPath();
-  for(var x=0;x<prop.canvas.size.width;x+=m_to_pixel(10)) {
-    cc.moveTo(mod((x+prop.ui.pan[0]),prop.canvas.size.width),0);
-    cc.lineTo(mod((x+prop.ui.pan[0]),prop.canvas.size.width),prop.canvas.size.height);
+function canvas_draw_particles(cc) {
+  cc.translate(prop.canvas.size.width/2+prop.ui.pan[0], prop.canvas.size.height/2+prop.ui.pan[1]);
+  for(var i=0;i<prop.canvas.particles.particles.length;i++) {
+    var particle=prop.canvas.particles.particles[i];
+    if(particle[2] > 0) {
+      var s=crange(0, time() - particle[2], particle[3], 2, 10);
+      cc.save();
+      cc.globalAlpha=crange(2, s, 3, 0, 1)*(1-s*0.1);
+      cc.globalAlpha*=particle[4];
+      cc.translate(m_to_pixel(particle[0][0]), m_to_pixel(particle[0][1]));
+      cc.rotate(mod((time()+particle[2])*0.2, Math.PI*2));
+      cc.scale(s, s);
+      cc.drawImage(prop.canvas.images.smoke, -16, -16);
+      cc.restore();
+//      cc.fillRect(m_to_pixel(particle[0][0])-1, m_to_pixel(particle[0][1])-1, 2, 2);
+    }
   }
-  cc.stroke();
 }
 
 // ground
@@ -622,8 +637,23 @@ function canvas_draw_minimap(cc) {
 }
 
 function canvas_update_post() {
+  prop.canvas.particles.amount=crange(0,prop.craft.thrust,prop.craft.thrust_peak[1]*6,0,1);
+  var o=22;
+  var a=prop.craft.angle;
+  prop.canvas.particles.emitter[0]=-prop.craft.rocket_body.position[0] - (Math.sin(a) * o);
+  prop.canvas.particles.emitter[1]=-prop.craft.rocket_body.position[1] + (Math.cos(a) * o);
+  if(false) {
+    prop.canvas.particles.emitter_velocity[0]=(Math.cos(a) * prop.craft.rocket_body.velocity[0]) + (Math.sin(a) * prop.craft.rocket_body.velocity[1]);
+    prop.canvas.particles.emitter_velocity[1]=(Math.sin(a) * prop.craft.rocket_body.velocity[0]) + (Math.cos(a) * prop.craft.rocket_body.velocity[1]);
+    o = 0.0;
+    prop.canvas.particles.emitter_velocity[0]*=o;
+    prop.canvas.particles.emitter_velocity[1]*=o;
+  }
+  prop.canvas.particles.tick();
+
   var cc=canvas_get("background");
   cc.save();
+
   cc.save();
   canvas_draw_background(cc);
   cc.restore();
@@ -640,6 +670,10 @@ function canvas_update_post() {
 //  canvas_clear(cc);
   cc.translate(0,m_to_pixel(prop.craft.offset));
   canvas_draw_pads(cc);
+  cc.restore();
+
+  cc.save();
+  canvas_draw_particles(cc);
   cc.restore();
 
 //  var cc=canvas_get("craft");

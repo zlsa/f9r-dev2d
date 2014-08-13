@@ -5,6 +5,7 @@
 var MODULES=[
   "-util",
   "-animation",
+  "-particle",
   "ui",
   "settings",
   "audio",
