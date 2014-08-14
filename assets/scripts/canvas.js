@@ -190,18 +190,20 @@ function canvas_draw_craft(cc) {
 
   var rcs=prop.craft.thrust_vector * m_to_pixel(2);
   if(prop.craft.rcs_enabled) {
-    if(prop.craft.thrust_vector < 0) rcs-=w/3;
-    if(prop.craft.thrust_vector > 0) rcs+=w/3;
-    cc.beginPath();
-    cc.moveTo(0,    -h/2-interstage_height+m_to_pixel(2.5));
-    cc.lineTo(rcs,  -h/2-interstage_height+m_to_pixel(2.5));
-    cc.lineCap="round";
-    cc.strokeStyle="#ccf";
-    cc.lineWidth=4;
-    cc.stroke();
-    cc.strokeStyle="#fff";
-    cc.lineWidth=2;
-    cc.stroke();
+    if(!prop.craft.crashed && prop.craft.rcs_fuel > 0 && !prop.craft.clamped) {
+      if(prop.craft.thrust_vector < 0) rcs-=w/3;
+      if(prop.craft.thrust_vector > 0) rcs+=w/3;
+      cc.beginPath();
+      cc.moveTo(0,    -h/2-interstage_height+m_to_pixel(2.5));
+      cc.lineTo(rcs,  -h/2-interstage_height+m_to_pixel(2.5));
+      cc.lineCap="round";
+      cc.strokeStyle="#ccf";
+      cc.lineWidth=4;
+      cc.stroke();
+      cc.strokeStyle="#fff";
+      cc.lineWidth=2;
+      cc.stroke();
+    }
   }
 
   cc.lineWidth=1;

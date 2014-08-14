@@ -337,6 +337,7 @@ var Craft=function(options) {
 
   this.updateFuel=function() {
     this.rcs_fuel-=Math.abs(this.rcs_force)*delta()*(1000/50); // about 50 second RCS time
+    if(this.rcs_fuel < 0) this.rcs_fuel=0;
 
     if(this.throttle < 0.01) return;
     var single_engine_fuel_flow=trange(0,this.getAltitude(),100000,this.fuel_flow[0],this.fuel_flow[1]);
@@ -376,8 +377,14 @@ var Craft=function(options) {
 
     // RCS
     
-    if(!this.rcs_enabled) return;
-    if(this.crashed || this.rcs_fuel <= 0 || this.clamped) return;
+    if(!this.rcs_enabled) {
+      this.rcs_force=0;
+      return;
+    }
+    if(this.crashed || this.rcs_fuel <= 0 || this.clamped) {
+      this.rcs_force=0;
+      return;
+    }
 
     this.rcs_force=this.vector;
     this.rocket_body.angularForce=-this.rcs_force*3000;
