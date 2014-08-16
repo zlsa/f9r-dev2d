@@ -2,6 +2,8 @@
 function canvas_init_pre() {
   prop.canvas={};
 
+  prop.canvas.particles_enabled = false;
+
   prop.canvas.images={};
 
   prop.canvas.images.logo=new Image();
@@ -76,6 +78,7 @@ function canvas_draw_background(cc) {
 }
 
 function canvas_draw_particles(cc) {
+  if(!prop.canvas.particles_enabled) return;
   cc.translate(prop.canvas.size.width/2+prop.ui.pan[0], prop.canvas.size.height/2+prop.ui.pan[1]);
   for(var i=0;i<prop.canvas.particles.particles.length;i++) {
     var particle=prop.canvas.particles.particles[i];
@@ -662,17 +665,19 @@ function canvas_draw_minimap(cc) {
 }
 
 function canvas_update_post() {
-  prop.canvas.particles.amount=crange(0,prop.craft.thrust,prop.craft.thrust_peak[1],0,1);
-  var o=22;
-  var a=prop.craft.angle;
-  prop.canvas.particles.emitter[0]=-prop.craft.rocket_body.position[0] - (Math.sin(a) * o);
-  prop.canvas.particles.emitter[1]=-prop.craft.rocket_body.position[1] + (Math.cos(a) * o);
-  if(false) {
-    prop.canvas.particles.emitter_velocity[0]=(Math.cos(a) * prop.craft.rocket_body.velocity[0]) + (Math.sin(a) * prop.craft.rocket_body.velocity[1]);
-    prop.canvas.particles.emitter_velocity[1]=(Math.sin(a) * prop.craft.rocket_body.velocity[0]) + (Math.cos(a) * prop.craft.rocket_body.velocity[1]);
-    o = 0.0;
-    prop.canvas.particles.emitter_velocity[0]*=o;
-    prop.canvas.particles.emitter_velocity[1]*=o;
+  if(prop.canvas.particles_enabled) {
+    prop.canvas.particles.amount=crange(0,prop.craft.thrust,prop.craft.thrust_peak[1],0,1);
+    var o=22;
+    var a=prop.craft.angle;
+    prop.canvas.particles.emitter[0]=-prop.craft.rocket_body.position[0] - (Math.sin(a) * o);
+    prop.canvas.particles.emitter[1]=-prop.craft.rocket_body.position[1] + (Math.cos(a) * o);
+    if(false) {
+      prop.canvas.particles.emitter_velocity[0]=(Math.cos(a) * prop.craft.rocket_body.velocity[0]) + (Math.sin(a) * prop.craft.rocket_body.velocity[1]);
+      prop.canvas.particles.emitter_velocity[1]=(Math.sin(a) * prop.craft.rocket_body.velocity[0]) + (Math.cos(a) * prop.craft.rocket_body.velocity[1]);
+      o = 0.0;
+      prop.canvas.particles.emitter_velocity[0]*=o;
+      prop.canvas.particles.emitter_velocity[1]*=o;
+    }
   }
 //  prop.canvas.particles.emitter_velocity[0] = -prop.craft.rocket_body.velocity[0];
 //  prop.canvas.particles.emitter_velocity[1] = -prop.craft.rocket_body.velocity[1];

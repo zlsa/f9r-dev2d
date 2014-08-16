@@ -86,6 +86,10 @@ function settings_init_post() {
     if(this.value) prop.ui.minimap.enabled=true;
     else prop.ui.minimap.enabled=false;
   });
+  setting_add(["particles","show particles"],"bool",false,function() {
+    if(this.value) prop.canvas.particles_enabled = true;
+    else prop.canvas.particles_enabled = false;
+  });
   setting_add(["hard mode","enable for realism"],"bool",false,function() {
     if(this.value) {
       prop.craft.hard_mode=true;
