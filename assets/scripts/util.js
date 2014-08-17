@@ -125,7 +125,7 @@ function srange(il,i,ih,ol,oh) {
 }
 
 function scrange(il,i,ih,ol,oh) {
-  return clamp(ol,srange(il,i,ih,ol,oh),oh);
+  return srange(il,clamp(il, i, ih),ih,ol,oh);
 }
 
 function distance(a,b) {
