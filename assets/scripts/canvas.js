@@ -85,9 +85,9 @@ function canvas_draw_particles(cc) {
     if(particle[2] > 0) {
       var s=crange(0, time() - particle[2], particle[3], 3, 20);
       cc.save();
-      cc.globalAlpha=scrange(-3, s, 10, 0, 1)*scrange(6, s, 20, 1, 0);
+      cc.globalAlpha=crange(-3, s, 10, 0, 1)*scrange(6, s, 20, 1, 0);
       cc.globalAlpha*=particle[4]*2;
-      cc.globalAlpha*=scrange(0, prop.craft.getAltitude(), 15000, 1, 0);
+      cc.globalAlpha*=crange(0, prop.craft.getAltitude(), 15000, 1, 0);
       if(cc.globalAlpha < 0.01) {
         cc.restore();
         continue;
@@ -665,24 +665,6 @@ function canvas_draw_minimap(cc) {
 }
 
 function canvas_update_post() {
-  if(prop.canvas.particles_enabled) {
-    prop.canvas.particles.amount=crange(0,prop.craft.thrust,prop.craft.thrust_peak[1],0,1);
-    var o=22;
-    var a=prop.craft.angle;
-    prop.canvas.particles.emitter[0]=-prop.craft.rocket_body.position[0] - (Math.sin(a) * o);
-    prop.canvas.particles.emitter[1]=-prop.craft.rocket_body.position[1] + (Math.cos(a) * o);
-    if(false) {
-      prop.canvas.particles.emitter_velocity[0]=(Math.cos(a) * prop.craft.rocket_body.velocity[0]) + (Math.sin(a) * prop.craft.rocket_body.velocity[1]);
-      prop.canvas.particles.emitter_velocity[1]=(Math.sin(a) * prop.craft.rocket_body.velocity[0]) + (Math.cos(a) * prop.craft.rocket_body.velocity[1]);
-      o = 0.0;
-      prop.canvas.particles.emitter_velocity[0]*=o;
-      prop.canvas.particles.emitter_velocity[1]*=o;
-    }
-  }
-//  prop.canvas.particles.emitter_velocity[0] = -prop.craft.rocket_body.velocity[0];
-//  prop.canvas.particles.emitter_velocity[1] = -prop.craft.rocket_body.velocity[1];
-  prop.canvas.particles.tick();
-
   var cc=canvas_get("background");
   cc.save();
 
@@ -725,4 +707,24 @@ function canvas_update_post() {
   canvas_draw_minimap(cc);
   cc.restore();
   cc.restore();
+
+  if(prop.canvas.particles_enabled) {
+    prop.canvas.particles.amount=crange(0,prop.craft.thrust,prop.craft.thrust_peak[1],0,1);
+    var o=22;
+    var a=prop.craft.angle;
+    prop.canvas.particles.emitter[0]=-prop.craft.rocket_body.position[0] - (Math.sin(a) * o);
+    prop.canvas.particles.emitter[1]=-prop.craft.rocket_body.position[1] + (Math.cos(a) * o);
+    if(false) {
+      prop.canvas.particles.emitter_velocity[0]=(Math.cos(a) * prop.craft.rocket_body.velocity[0]) + (Math.sin(a) * prop.craft.rocket_body.velocity[1]);
+      prop.canvas.particles.emitter_velocity[1]=(Math.sin(a) * prop.craft.rocket_body.velocity[0]) + (Math.cos(a) * prop.craft.rocket_body.velocity[1]);
+      o = 0.0;
+      prop.canvas.particles.emitter_velocity[0]*=o;
+      prop.canvas.particles.emitter_velocity[1]*=o;
+    }
+  }
+  var v = distance([0, 0], prop.craft.rocket_body.velocity);
+  prop.canvas.particles.emitter_velocity[0] = -prop.craft.rocket_body.velocity[0] * crange(0, v, 500, 0, 0.98);
+  prop.canvas.particles.emitter_velocity[1] = -prop.craft.rocket_body.velocity[1] * crange(0, v, 500, 0, 0.98);
+  prop.canvas.particles.tick();
+
 }

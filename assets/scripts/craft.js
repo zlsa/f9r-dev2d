@@ -25,13 +25,13 @@ var Craft=function(options) {
     "f9r-dev1": {
       position: [0,0],
       velocity: [0,0],
-      ballast:  25000,
+      ballast:  15000,
       engine_number:1,
       max_engines: 1,
       angle: 0,
       angular_velocity: 0,
       rcs_fuel:0,
-      fuel: 20000,
+      fuel: 28000,
       gear_down:false,
       clamp:true,
       model:"f9r-dev"
@@ -39,13 +39,13 @@ var Craft=function(options) {
     "f9r-dev1-triple-engine": {
       position: [0,0],
       velocity: [0,0],
-      ballast: 0,
+      ballast: 15000,
       engine_number:3,
       max_engines: 3,
       angle: 0,
       angular_velocity: 0,
       rcs_fuel:0,
-      fuel: 60000,
+      fuel: 40000,
       gear_down:false,
       clamp:true,
       model:"f9r-dev"
@@ -434,7 +434,7 @@ var Craft=function(options) {
 
   this.update=function() {
     if(this.hard_mode) {
-      this.min_throttle=0.6;
+      this.min_throttle=0.5;
       this.vector_max=radians(0.5);
       this.crash_velocity=6.0;
       this.crash_angle=radians(5);
