@@ -63,8 +63,11 @@ function settings_init_post() {
   setting_add(["reset","reset the simulation"],"button",null,function() {
     craft_reset();
   });
-  setting_add(["f9r-dev1","three engines, 1/3 fuel"],"button",null,function() {
+  setting_add(["f9r-dev1 single engine","one engine, 1/10 fuel"],"button",null,function() {
     craft_reset("f9r-dev1");
+  });
+  setting_add(["f9r-dev1 triple engine","three engines, 1/3 fuel"],"button",null,function() {
+    craft_reset("f9r-dev1-triple-engine");
   });
   setting_add(["f9r-dev2","nine engines, full fuel"],"button",null,function() {
     craft_reset("f9r-dev2");
