@@ -369,8 +369,7 @@ var Craft=function(options) {
 
     ap.target_altitude = alt + 5;
     if(ap.climbed) {
-      ap.target_altitude  = 0.0;
-      ap.target_altitude += 50;
+      ap.target_altitude  = -10.0;
     }
 
     if(!ap.enabled) return;
@@ -403,13 +402,10 @@ var Craft=function(options) {
     target_vspeed *= trange(1, twr, 3, 2.5, 4.5);
     target_vspeed *= crange(1, this.getAltitude(), 10, 3, 1);
 
-//    target_vspeed     = Math.min(target_vspeed, 50);
-
     var target_hspeed = crange(-200, (-this.pos[0]) - ap.target_range, 200, -20, 20);
-    target_hspeed    *= crange(1, this.engine_number,   9,  1, 0.8);
+    target_hspeed    *= crange(1, this.engine_number,   9, 1, 0.8);
+    target_hspeed    *= crange(10, this.getAltitude(), 60, 0, 1);
     ap.target_hspeed  = target_hspeed;
-
-    target_hspeed    *= crange(20, this.getAltitude(), 70, 0, 1);
 
     ap.pid.vspeed.target = target_vspeed;
     ap.pid.vspeed.input  = this.getVspeed();
@@ -422,7 +418,7 @@ var Craft=function(options) {
 
     var target_angle  = trange(-1, ap.pid.hspeed.get(), 1, radians(5), -radians(5));
 
-    target_angle     *= crange(5, this.getAltitude(), 100, 0.5, 1);
+    target_angle     *= crange(5, this.getAltitude(),  60, 0.5, 1);
     target_angle     *= crange(1, this.engine_number,   9,  1, 0.05);
     target_angle      = clamp(-radians(30), target_angle, radians(30));
     ap.target_angle   = target_angle;
@@ -430,7 +426,7 @@ var Craft=function(options) {
     var angle         = this.angle + (this.rocket_body.angularVelocity * 0.5);
     var target_angvel = trange(-radians(10), angle_difference(angle, target_angle), radians(10), radians(0.4), -radians(0.4));
 
-    target_angvel    *= crange(5, this.getAltitude(), 100, 30, 10);
+    target_angvel    *= crange(5, this.getAltitude(),  50, 30, 10);
     target_angvel    *= crange(1, this.engine_number,   9,  1, 0.01);
     ap.target_angvel  = target_angvel;
 
