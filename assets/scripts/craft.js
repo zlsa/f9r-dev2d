@@ -23,6 +23,20 @@ var Craft=function(options) {
 
   this.scenarios={
     "f9r-dev1": {
+      position: [0,500],
+      velocity: [0,-8],
+      ballast:  15000,
+      engine_number:1,
+      max_engines: 1,
+      angle: 0,
+      angular_velocity: 0,
+      rcs_fuel:0,
+      fuel: 15000,
+      gear_down:true,
+      clamp:false,
+      model:"f9r-dev"
+    },
+    "f9r-dev1": {
       position: [0,0],
       velocity: [0,0],
       ballast:  15000,
@@ -66,7 +80,7 @@ var Craft=function(options) {
     },
     "f9r-rtls": {
       position: [-1000,10000],
-      velocity: [25,-300],
+      velocity: [25,-800],
       engine_number: 1,
       ballast: 0,
       max_engines: 1,
@@ -97,7 +111,12 @@ var Craft=function(options) {
   this.g_force=0;
 
   this.autopilot={
-    enabled: false
+    enabled: false,
+    pid: {
+      vspeed: new PID( 1.00, 0.0, 0),
+      hspeed: new PID( 0.50, 0.0, 0),
+      aspeed: new PID(20.00, 0.0, 0)
+    }
   };
 
   this.rcs_enabled=false;
@@ -320,8 +339,12 @@ var Craft=function(options) {
     this.rocket_body.angularDamping=crange(0,this.getAltitude(),120000,d,0.01);
   };
   
-  this.getAltitude=function() {
-    return this.pos[1]+this.offset-22;
+  this.getAltitude=function(lookahead) {
+    var alt = this.pos[1] + this.offset - 22;
+    if(lookahead) {
+      alt += this.getVspeed() * lookahead;
+    }
+    return alt;
   };
 
   this.getVspeed=function() {
@@ -329,25 +352,95 @@ var Craft=function(options) {
   };
 
   this.updateAutopilot=function() {
-    if(!this.autopilot.enabled) return;
-    this.engine_number=crange(this.mass,this.rocket_body.mass,this.mass+this.full_fuel/2,1,9);
-    if(this.engine_number < 0.5) this.engine_number=1;
-    else if(this.engine_number > 6) this.engine_number=3;
-    else this.engine_number=9;
-    this.engine_number=1;
+    var ap = this.autopilot;
+    
+    var alt = 1000;
 
-    if(!this.gear_down)
+    if(this.scenario == "f9r-dev1-triple-engine") {
+      alt = 3000;
+    }
+
+    if(this.getAltitude() > alt) {
+      ap.climbed = true;
+    }
+
+    ap.target_altitude = alt;
+    if(ap.climbed) {
+      ap.target_altitude = 0.2;
+    }
+
+    if(!ap.enabled) return;
+    var twr = ((this.thrust_peak[1] * 9 * 10) / (this.mass+this.fuel));
+    ap.twr = twr;
+
+    if(twr > 10) {
+      this.engine_number = 1;
+    } else if(twr > 5) {
+      this.engine_number = 3;
+    } else {
+      this.engine_number = 9;
+    }
+
+    twr = ((this.thrust_peak[1] * this.engine_number * 10) / (this.mass+this.fuel));
+
+    if(!this.gear_down && this.getVspeed() < -1 && this.getAltitude(10) < 100)
       this.lowerGear();
 
-    this.autopilot.target_altitude=-5;
-    this.autopilot.target_vspeed=trange(140,this.getAltitude()-this.autopilot.target_altitude,-140,-100,100);
+    if(this.clamped)
+      this.unclamp()
 
-    this.autopilot.target_angle=-crange(-1,this.rocket_body.velocity[0],1,-radians(50),radians(50));
+    ap.target_range = 0;
 
-    this.throttle=trange(0,this.autopilot.target_vspeed-this.getVspeed(),10,0,1);
-    this.throttle=clamp(0.2,this.throttle,1);
-    var lookahead=crange(0,Math.abs(this.rocket_body.angularVelocity),Math.PI,2,100);
-    this.vector=(mod((((this.angle-Math.PI)-this.autopilot.target_angle)+(this.rocket_body.angularVelocity*lookahead)),Math.PI*2)-Math.PI)*100;
+    var target_vspeed =  trange(200, this.getAltitude(4) - ap.target_altitude, -200, -100, 100);
+    target_vspeed    += scrange( 30, this.getAltitude(4) - ap.target_altitude,  -30,  -10,  10);
+    
+    target_vspeed *= crange(1, twr, 3, 1.3, 1.5);
+
+//    target_vspeed     = Math.min(target_vspeed, 50);
+
+    var target_hspeed = crange(-100, (-this.pos[0]) - ap.target_range, 100, -9, 9);
+    ap.target_hspeed  = target_hspeed;
+
+    target_hspeed    *= crange(20, this.getAltitude(), 50, 0, 1);
+
+    ap.pid.vspeed.target = target_vspeed;
+    ap.pid.vspeed.input  = this.getVspeed();
+
+    ap.pid.hspeed.target = target_hspeed;
+    ap.pid.hspeed.input  = this.rocket_body.velocity[0];
+
+    ap.pid.vspeed.tick();
+    ap.pid.hspeed.tick();
+
+    var target_angle  = trange(-1, ap.pid.hspeed.get(), 1, radians(5), -radians(5));
+
+    target_angle     *= crange(5, this.getAltitude(), 100, 0.5, 1);
+    target_angle      = clamp(-radians(20), target_angle, radians(20));
+    ap.target_angle   = target_angle;
+
+    var angle         = this.angle + (this.rocket_body.angularVelocity * 0.5);
+    var target_angvel = trange(-radians(10), angle_difference(angle, target_angle), radians(10), radians(0.4), -radians(0.4));
+
+    target_angvel    *= crange(5, this.getAltitude(), 100, 30, 10);
+    ap.target_angvel  = target_angvel;
+
+    ap.pid.aspeed.target = this.rocket_body.angularVelocity;
+    ap.pid.aspeed.input  = target_angvel;
+
+    ap.pid.aspeed.tick();
+    
+    this.throttle = clamp( 0.00, ap.pid.vspeed.get(), 1.00);
+    this.vector   = clamp(-1.00, ap.pid.aspeed.get() * crange(0, this.throttle, 1, 60, 12), 1.00);
+
+    if(this.throttle < 0.02) {
+      this.throttle = 0.02;
+    }
+
+    if(this.landed) {
+      this.throttle = 0;
+      this.vector   = 0;
+    }
+
   };
 
   this.updateFuel=function() {

@@ -146,10 +146,81 @@ function choose(l) {
   return l[Math.floor(Math.random()*l.length)];
 }
 
-function mod(x,y) {
-  var z=x+0;
-  x=x%y;
-  if(x < 0)
-    x=(y-x)-2;
-  return x;
+function mod(a, n) {
+  return ((a%n)+n)%n;
+};
+
+var Lowpass=function(mix) {
+  this.target = 0;
+  this.value = 0;
+
+  this.mix = mix;
+
+  this.tick=function() {
+    var mix=this.mix;
+    this.value = (this.target * (1-mix)) + (this.value * mix);
+  };
+};
+
+var PID=function(p, i, d, ic, ek) {
+  this.p = p;
+  this.i = i;
+  this.d = d;
+  
+  this.ic = ic || 0;
+  this.ek = ek || 0;
+
+  this.target = 0;
+  this.input  = 0;
+
+  this.speed_lowpass = new Lowpass(0.99);
+
+  this.proportional = 0;
+  this.integral = 0;
+  this.deriviative = 0;
+
+  this.error = 0;
+
+  this.value = 0;
+
+  this.get = function() {
+    return this.value;
+  },
+
+  this.predict_error = function() {
+    return this.target - (this.input + (this.speed_lowpass.value));
+  },
+
+  this.tick = function() {
+    this.speed_lowpass.target = this.integral;
+    this.speed_lowpass.tick();
+
+    this.error = (this.target - this.input);
+
+    this.proportional = this.error * this.p;
+    this.integral += (this.error * this.i * delta());
+    this.deriviative = this.predict_error() * this.d;
+
+    if(this.ic) this.integral = clamp(-this.ic, this.integral, this.ic);
+
+    this.value = this.proportional + this.integral + this.deriviative;
+  }
+};
+
+function angle_difference(a, b) {
+  a = degrees(a);
+  b = degrees(b);
+  var invert=false;
+  if(b > a) {
+    invert=true;
+    var temp=a;
+    a=b;
+    b=temp;
+  }
+  var difference=mod(a-b, 360);
+  if(difference > 180) difference -= 360;
+  if(invert) difference *= -1;
+  difference = radians(difference);
+  return difference;
 }
+

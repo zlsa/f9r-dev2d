@@ -108,6 +108,13 @@ function settings_init_post() {
     if(this.value) prop.audio.enabled=true;
     else prop.audio.enabled=false;
   });
+  setting_add(["autopilot","can fly to 1000m and land again"],"bool",false,function() {
+    if(this.value) {
+      prop.craft.autopilot.enabled=true;
+    } else {
+      prop.craft.autopilot.enabled=false;
+    }
+  });
 }
 
 function setting_add(name,type,value,callback) {

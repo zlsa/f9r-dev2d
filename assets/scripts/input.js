@@ -164,9 +164,9 @@ function input_update_pre() {
   }
 
   if(prop.input.keys[prop.input.keysym.j]) {
-    prop.craft.autopilot.enabled=true;
+//    prop.craft.autopilot.enabled=true;
   } else {
-    prop.craft.autopilot.enabled=false;
+//    prop.craft.autopilot.enabled=false;
   }
 
   var flip=1;
