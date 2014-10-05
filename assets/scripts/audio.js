@@ -63,7 +63,7 @@ function audio_init_sources() {
 
 function audio_real_update() {
   var v=1;
-//  if(!(prop.audio.enabled && prop.audio.focused)) v=0;
+  if(!(prop.audio.enabled && prop.audio.focused)) v=0;
   prop.audio.gains.engine.gain.value=crange(0,prop.craft.thrust,prop.craft.thrust_peak[1]*6,0,1)*v;
 
   prop.audio.sources.engine.playbackRate.value=crange(0,prop.craft.thrust,prop.craft.thrust_peak[1]*prop.craft.engine_number,0.2,1.3);
