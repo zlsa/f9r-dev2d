@@ -369,7 +369,7 @@ var Craft=function(options) {
 
     ap.target_altitude = alt + 5;
     if(ap.climbed) {
-      ap.target_altitude  = -10.0;
+      ap.target_altitude  = 45.0;
     }
 
     if(!ap.enabled) return;
