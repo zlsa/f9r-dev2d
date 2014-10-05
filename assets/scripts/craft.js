@@ -357,7 +357,10 @@ var Craft=function(options) {
     var alt = 1000;
 
     if(this.scenario == "f9r-dev1-triple-engine") {
-      alt = 3000;
+      alt = 4000;
+    }
+    if(this.model == "f9r-dev-high") {
+      alt = 100000;
     }
 
     if(this.getAltitude() > alt) {
@@ -366,7 +369,8 @@ var Craft=function(options) {
 
     ap.target_altitude = alt + 5;
     if(ap.climbed) {
-      ap.target_altitude = 0.2;
+      ap.target_altitude  = 0.0;
+      ap.target_altitude += 50;
     }
 
     if(!ap.enabled) return;
@@ -383,25 +387,29 @@ var Craft=function(options) {
 
     twr = ((this.thrust_peak[1] * this.engine_number * 10) / (this.mass+this.fuel));
 
-    if(!this.gear_down && this.getVspeed() < -1 && this.getAltitude(10) < 100)
+    if(!this.gear_down && this.getVspeed() < -1 && this.getAltitude(6) < 50)
       this.lowerGear();
 
-    if(this.clamped)
+    if(this.clamped && this.thrust > (this.thrust_peak[0] * 0.9 * this.engine_number))
       this.unclamp()
 
-    ap.target_range = 0;
+    ap.target_range = 400;
 
-    var target_vspeed =  trange(200, this.getAltitude(4) - ap.target_altitude, -200, -100, 100);
-    target_vspeed    += scrange( 30, this.getAltitude(4) - ap.target_altitude,  -30,  -10,  10);
+    var t = clamp(0, trange(10, Math.abs(this.getVspeed()), 30, 2, 4), 10);
+    var target_vspeed =  trange(200, this.getAltitude(t) - ap.target_altitude, -200, -100, 100);
+    target_vspeed    += scrange( 30, this.getAltitude(t) - ap.target_altitude,  -30,  -10,  10);
+    target_vspeed    *= crange(1, this.engine_number,   9,  1, 1.5);
     
-    target_vspeed *= crange(1, twr, 3, 2.5, 4.5);
+    target_vspeed *= trange(1, twr, 3, 2.5, 4.5);
+    target_vspeed *= crange(1, this.getAltitude(), 10, 3, 1);
 
 //    target_vspeed     = Math.min(target_vspeed, 50);
 
-    var target_hspeed = crange(-100, (-this.pos[0]) - ap.target_range, 100, -9, 9);
+    var target_hspeed = crange(-200, (-this.pos[0]) - ap.target_range, 200, -20, 20);
+    target_hspeed    *= crange(1, this.engine_number,   9,  1, 0.8);
     ap.target_hspeed  = target_hspeed;
 
-    target_hspeed    *= crange(20, this.getAltitude(), 50, 0, 1);
+    target_hspeed    *= crange(20, this.getAltitude(), 70, 0, 1);
 
     ap.pid.vspeed.target = target_vspeed;
     ap.pid.vspeed.input  = this.getVspeed();
@@ -415,13 +423,15 @@ var Craft=function(options) {
     var target_angle  = trange(-1, ap.pid.hspeed.get(), 1, radians(5), -radians(5));
 
     target_angle     *= crange(5, this.getAltitude(), 100, 0.5, 1);
-    target_angle      = clamp(-radians(20), target_angle, radians(20));
+    target_angle     *= crange(1, this.engine_number,   9,  1, 0.05);
+    target_angle      = clamp(-radians(30), target_angle, radians(30));
     ap.target_angle   = target_angle;
 
     var angle         = this.angle + (this.rocket_body.angularVelocity * 0.5);
     var target_angvel = trange(-radians(10), angle_difference(angle, target_angle), radians(10), radians(0.4), -radians(0.4));
 
     target_angvel    *= crange(5, this.getAltitude(), 100, 30, 10);
+    target_angvel    *= crange(1, this.engine_number,   9,  1, 0.01);
     ap.target_angvel  = target_angvel;
 
     ap.pid.aspeed.target = this.rocket_body.angularVelocity;
@@ -429,17 +439,28 @@ var Craft=function(options) {
 
     ap.pid.aspeed.tick();
     
-    this.throttle = clamp( 0.00, ap.pid.vspeed.get(), 1.00);
+    this.throttle = Math.min(    ap.pid.vspeed.get(), 1);
     this.vector   = clamp(-1.00, ap.pid.aspeed.get() * crange(0, this.throttle, 1, 60, 12), 1.00);
 
-    if(this.throttle < 0.02) {
+    if(this.throttle < -0.5 && (this.getAltitude() > 1000 && this.engine_number == 1)) {
+      this.throttle = 0;
+    } else if(this.throttle < 0.02) {
       this.throttle = 0.02;
+    }
+
+    if(this.throttle < 0.01) {
+      this.rcs_enabled = true;
+      this.vector *= 0.3;
+    } else {
+      this.rcs_enabled = false;
     }
 
     if(this.landed) {
       this.throttle = 0;
       this.vector   = 0;
     }
+
+    this.throttle = clamp(0, this.throttle, 1);
 
   };
 
@@ -494,7 +515,8 @@ var Craft=function(options) {
       return;
     }
 
-    this.rcs_force=this.vector;
+    mix=0.9;
+    this.rcs_force=this.vector*(1-mix)+this.rcs_force*mix;
     this.rocket_body.angularForce=-this.rcs_force*3000;
   };
 

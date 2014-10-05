@@ -68,10 +68,24 @@ function ground_init() {
   });
 
   ground_add_pad({
-    x:400,
-    width:30,
+    x:400 - 7,
+    width:2,
     height: 50,
-    name:"precision landings"
+    name:""
+  });
+
+  ground_add_pad({
+    x:400 + 7,
+    width:2,
+    height: 50,
+    name:""
+  });
+
+  ground_add_pad({
+    x:400,
+    width:16,
+    height: 40,
+    name:"precision"
   });
 
   ground_add_pad({
