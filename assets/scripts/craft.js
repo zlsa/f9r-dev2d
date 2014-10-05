@@ -394,7 +394,7 @@ var Craft=function(options) {
     var target_vspeed =  trange(200, this.getAltitude(4) - ap.target_altitude, -200, -100, 100);
     target_vspeed    += scrange( 30, this.getAltitude(4) - ap.target_altitude,  -30,  -10,  10);
     
-    target_vspeed *= crange(1, twr, 3, 1.3, 1.5);
+    target_vspeed *= crange(1, twr, 3, 2.5, 4.5);
 
 //    target_vspeed     = Math.min(target_vspeed, 50);
 
