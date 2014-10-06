@@ -360,8 +360,8 @@ var Craft=function(options) {
 
     ap.target_altitude = alt + 1;
     if(ap.climbed) {
-      ap.target_altitude  = 0;
-      ap.target_altitude += 1.5;
+      ap.target_altitude  = 45;
+      ap.target_altitude += 0;
     }
 
     if(!ap.enabled) return;
@@ -384,7 +384,7 @@ var Craft=function(options) {
     if(this.clamped && this.thrust > (this.thrust_peak[0] * 0.9 * this.engine_number))
       this.unclamp()
 
-    ap.target_range = 0;
+    ap.target_range = 400;
 
     var t = clamp(0, trange(10, Math.abs(this.getVspeed()), 30, 2, 4), 100);
     var target_vspeed =  trange(200, this.getAltitude(t) - ap.target_altitude, -200,  -90,  90);
