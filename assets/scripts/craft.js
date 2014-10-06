@@ -25,29 +25,15 @@ var Craft=function(options) {
 
   this.scenarios={
     "f9r-dev1": {
-      position: [0,500],
-      velocity: [0,-8],
-      ballast:  15000,
-      engine_number:1,
-      max_engines: 1,
-      angle: 0,
-      angular_velocity: 0,
-      rcs_fuel:0,
-      fuel: 15000,
-      gear_down:true,
-      clamp:false,
-      model:"f9r-dev"
-    },
-    "f9r-dev1": {
-      position: [0,0],
+      position: [0,10],
       velocity: [0,0],
-      ballast:  15000,
+      ballast:  5000,
       engine_number:1,
       max_engines: 1,
       angle: 0,
       angular_velocity: 0,
       rcs_fuel:0,
-      fuel: 28000,
+      fuel: 30000,
       gear_down:false,
       clamp:true,
       model:"f9r-dev"
@@ -400,7 +386,7 @@ var Craft=function(options) {
 
     ap.target_range = 0;
 
-    var t = clamp(0, trange(10, Math.abs(this.getVspeed()), 30, 2, 4), 8);
+    var t = clamp(0, trange(10, Math.abs(this.getVspeed()), 30, 2, 4), 100);
     var target_vspeed =  trange(200, this.getAltitude(t) - ap.target_altitude, -200,  -90,  90);
     target_vspeed    += scrange( 30, this.getAltitude(t) - ap.target_altitude,  -30,  -10,  10);
     target_vspeed    *= crange(1, this.engine_number,   9,  1, 1.5);
@@ -408,7 +394,8 @@ var Craft=function(options) {
     target_vspeed *= crange(1, twr, 3, 1.4, 3.0);
     target_vspeed *= crange(1, this.getAltitude(), 10, 3, 1);
 
-    var target_hspeed = crange(-200, (-this.pos[0]) - ap.target_range, 200, -20, 20);
+    var target_hspeed = crange(-200, (-this.pos[0]) - ap.target_range, 200, -10, 10);
+    target_hspeed    += crange( -80, (-this.pos[0]) - ap.target_range,  80,  -5,  5);
     target_hspeed    *= crange(1, this.engine_number,   9, 1, 0.8);
     target_hspeed    *= crange(10, this.getAltitude(), 60, 0, 1);
     ap.target_hspeed  = target_hspeed;
@@ -422,7 +409,7 @@ var Craft=function(options) {
     ap.pid.vspeed.tick();
     ap.pid.hspeed.tick();
 
-    var target_angle  = trange(-1, ap.pid.hspeed.get(), 1, radians(5), -radians(5));
+    var target_angle  = trange(-1, ap.pid.hspeed.get(), 1, radians(4), -radians(4));
 
     target_angle     *= crange(5, this.getAltitude(),  60, 0.5, 1);
     target_angle     *= crange(1, this.engine_number,   9,  1, 0.05);
@@ -442,11 +429,11 @@ var Craft=function(options) {
     ap.pid.aspeed.tick();
     
     var throttle  = Math.min(ap.pid.vspeed.get(), 1);
-    var mix=0.92;
+    var mix=0.98;
     this.throttle = (throttle * (1 - mix)) + (this.throttle * mix);
     this.vector   = clamp(-1.00, ap.pid.aspeed.get() * crange(0, this.throttle, 1, 60, 12), 1.00);
 
-    if(this.throttle < -0.5 && (this.getAltitude() > 2000 && this.engine_number == 1 && this.getVspeed() < 0)) {
+    if(this.throttle < -0.5 && (this.getAltitude() > 2000 && this.engine_number == 1 && target_vspeed < 0)) {
       this.throttle = 0;
     } else if(this.throttle < 0.02) {
       this.throttle = 0.02;
