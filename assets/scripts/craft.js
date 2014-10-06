@@ -18,6 +18,8 @@ var Craft=function(options) {
 
   this.crash_velocity=2;
   this.crash_angle=radians(5);
+  
+  this.velocity = [0, 0];
 
   this.hard_mode=false;
 
@@ -128,10 +130,13 @@ var Craft=function(options) {
   
   this.reset=function(scenario) {
     if(!scenario) scenario=this.scenario;
+    localStorage["f9r-dev2d-last-scenario"] = scenario;
     this.scenario=scenario;
     var s=this.scenarios[scenario];
     console.log(scenario, s);
     this.start=time()
+
+    this.autopilot.climbed = false;
 
     this.clamped=s.clamp;
 
@@ -367,9 +372,10 @@ var Craft=function(options) {
       ap.climbed = true;
     }
 
-    ap.target_altitude = alt + 5;
+    ap.target_altitude = alt + 1;
     if(ap.climbed) {
-      ap.target_altitude  = 45.0;
+      ap.target_altitude  = 0;
+      ap.target_altitude += 1.5;
     }
 
     if(!ap.enabled) return;
@@ -392,14 +398,14 @@ var Craft=function(options) {
     if(this.clamped && this.thrust > (this.thrust_peak[0] * 0.9 * this.engine_number))
       this.unclamp()
 
-    ap.target_range = 400;
+    ap.target_range = 0;
 
-    var t = clamp(0, trange(10, Math.abs(this.getVspeed()), 30, 2, 4), 10);
-    var target_vspeed =  trange(200, this.getAltitude(t) - ap.target_altitude, -200, -100, 100);
+    var t = clamp(0, trange(10, Math.abs(this.getVspeed()), 30, 2, 4), 8);
+    var target_vspeed =  trange(200, this.getAltitude(t) - ap.target_altitude, -200,  -90,  90);
     target_vspeed    += scrange( 30, this.getAltitude(t) - ap.target_altitude,  -30,  -10,  10);
     target_vspeed    *= crange(1, this.engine_number,   9,  1, 1.5);
     
-    target_vspeed *= trange(1, twr, 3, 2.5, 4.5);
+    target_vspeed *= crange(1, twr, 3, 1.4, 3.0);
     target_vspeed *= crange(1, this.getAltitude(), 10, 3, 1);
 
     var target_hspeed = crange(-200, (-this.pos[0]) - ap.target_range, 200, -20, 20);
@@ -435,10 +441,12 @@ var Craft=function(options) {
 
     ap.pid.aspeed.tick();
     
-    this.throttle = Math.min(    ap.pid.vspeed.get(), 1);
+    var throttle  = Math.min(ap.pid.vspeed.get(), 1);
+    var mix=0.92;
+    this.throttle = (throttle * (1 - mix)) + (this.throttle * mix);
     this.vector   = clamp(-1.00, ap.pid.aspeed.get() * crange(0, this.throttle, 1, 60, 12), 1.00);
 
-    if(this.throttle < -0.5 && (this.getAltitude() > 1000 && this.engine_number == 1)) {
+    if(this.throttle < -0.5 && (this.getAltitude() > 2000 && this.engine_number == 1 && this.getVspeed() < 0)) {
       this.throttle = 0;
     } else if(this.throttle < 0.02) {
       this.throttle = 0.02;
@@ -530,7 +538,7 @@ var Craft=function(options) {
         this.landed=true;
         if(this.rocket_body.mass*100 > this.leg_max_mass && this.hard_mode) this.crashed=true; // too much weight on legs
         if(!this.gear_down) this.crashed=true; // crash if gear up
-        if(distance([0,0], this.rocket_body.velocity) > this.crash_velocity) {
+        if(distance([0,0], this.velocity) > this.crash_velocity) {
           this.crashed=true;
         }
         var angle=normalizeAngle(this.rocket_body.angle+Math.PI);
@@ -541,6 +549,7 @@ var Craft=function(options) {
         this.crash_time=time();
       }
     }
+    this.velocity = this.rocket_body.velocity;
   }
 
   this.update=function() {
@@ -570,7 +579,7 @@ var Craft=function(options) {
 //    this.rocket_body.angularForce+=(direction)*100*Math.abs(distance([0,0],this.rocket_body.velocity));
   };
 
-  this.reset();
+  this.reset(localStorage["f9r-dev2d-last-scenario"] || null);
 
 };
 
