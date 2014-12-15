@@ -17,7 +17,7 @@ function audio_load_file(name,url,callback) {
 function audio_init_pre() {
   prop.audio={};
   prop.audio.context=null;
-  
+
   prop.audio.enabled=false;
   prop.audio.focused=true;
 
@@ -27,7 +27,7 @@ function audio_init_pre() {
 }
 
 function audio_init() {
-  
+
   $(window).blur(function() {
     prop.audio.focused=false;
   });
@@ -64,7 +64,7 @@ function audio_init_sources() {
 function audio_real_update() {
   var v=1;
   if(!(prop.audio.enabled)) v=0;
-//  if(!(prop.audio.focused)) v=0;
+  if(prop.paused) v = 0;
   prop.audio.gains.engine.gain.value=crange(0,prop.craft.thrust,prop.craft.thrust_peak[1]*6,0,1)*v;
 
   prop.audio.sources.engine.playbackRate.value=crange(0,prop.craft.thrust,prop.craft.thrust_peak[1]*prop.craft.engine_number,0.2,1.3);

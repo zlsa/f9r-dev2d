@@ -83,6 +83,7 @@ function prop_init() {
   prop.temp="nothing here";
   prop.version=VERSION;
   prop.version_string="v"+VERSION.join(".");
+  prop.paused = false;
   prop.time={};
   prop.time.start=time();
   prop.time.frames=0;

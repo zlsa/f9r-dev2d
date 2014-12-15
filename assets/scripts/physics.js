@@ -20,8 +20,6 @@ function physics_init() {
 }
 
 function physics_update() {
-  prop.physics.world.step(delta(), 0, 50);
-//  prop.physics.world.step(delta(), 0, 50);
-//  prop.physics.world.step(delta(), 0, 50);
-//  prop.physics.world.step(delta() * 3);
+  if(!prop.paused)
+    prop.physics.world.step(delta(), 0, 50);
 }

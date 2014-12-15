@@ -18,7 +18,7 @@ var Craft=function(options) {
 
   this.crash_velocity=2;
   this.crash_angle=radians(5);
-  
+
   this.velocity = [0, 0];
 
   this.hard_mode=false;
@@ -27,7 +27,7 @@ var Craft=function(options) {
     "f9r-dev1": {
       position: [0,10],
       velocity: [0,0],
-      ballast:  5000,
+      ballast:  8000,
       engine_number:1,
       max_engines: 1,
       angle: 0,
@@ -113,7 +113,7 @@ var Craft=function(options) {
   this.rcs_full_fuel=1000;
 
   this.clamped=false;
-  
+
   this.reset=function(scenario) {
     if(!scenario) scenario=this.scenario;
     localStorage["f9r-dev2d-last-scenario"] = scenario;
@@ -177,13 +177,13 @@ var Craft=function(options) {
 
     this.rocket_body.position[1]+=25;//-this.offset;
     this.updateOffset();
-    
+
     if(s.clamp) this.clamp();
 
     if(!s.clamp) this.startMission();
 
     this.update();
-  
+
   };
 
   this.full_fuel=350000;
@@ -192,7 +192,7 @@ var Craft=function(options) {
 
   // kg of fuel per second of a single engine at sea level and in a vacuum
   this.fuel_flow=[210,240];
-  
+
   // max engine vector
   this.vector_max=radians(5);
 
@@ -210,7 +210,7 @@ var Craft=function(options) {
     angle: 0.01,
     mass: 1
   });
-  
+
   this.rocket_shape=new p2.Rectangle(3.66, 42);
   this.rocket_body.addShape(this.rocket_shape);
 
@@ -329,7 +329,7 @@ var Craft=function(options) {
     var speed=distance([0,0],this.rocket_body.velocity);
     this.rocket_body.angularDamping=crange(0,this.getAltitude(),120000,d,0.01);
   };
-  
+
   this.getAltitude=function(lookahead) {
     var alt = this.pos[1] + this.offset - 22;
     if(lookahead) {
@@ -344,7 +344,7 @@ var Craft=function(options) {
 
   this.updateAutopilot=function() {
     var ap = this.autopilot;
-    
+
     var alt = 1000;
 
     if(this.scenario == "f9r-dev1-triple-engine") {
@@ -358,10 +358,9 @@ var Craft=function(options) {
       ap.climbed = true;
     }
 
-    ap.target_altitude = alt + 1;
+    ap.target_altitude = alt + 5;
     if(ap.climbed) {
-      ap.target_altitude  = 45;
-      ap.target_altitude += 0;
+      ap.target_altitude  = 1;
     }
 
     if(!ap.enabled) return;
@@ -384,13 +383,13 @@ var Craft=function(options) {
     if(this.clamped && this.thrust > (this.thrust_peak[0] * 0.9 * this.engine_number))
       this.unclamp()
 
-    ap.target_range = 400;
+    ap.target_range = 0;
 
-    var t = clamp(0, trange(10, Math.abs(this.getVspeed()), 30, 2, 4), 100);
+    var t             = clamp(0, trange(10, Math.abs(this.getVspeed()), 30, 1, 3), 100);
     var target_vspeed =  trange(200, this.getAltitude(t) - ap.target_altitude, -200,  -90,  90);
     target_vspeed    += scrange( 30, this.getAltitude(t) - ap.target_altitude,  -30,  -10,  10);
     target_vspeed    *= crange(1, this.engine_number,   9,  1, 1.5);
-    
+
     target_vspeed *= crange(1, twr, 3, 1.4, 3.0);
     target_vspeed *= crange(1, this.getAltitude(), 10, 3, 1);
 
@@ -427,9 +426,9 @@ var Craft=function(options) {
     ap.pid.aspeed.input  = target_angvel;
 
     ap.pid.aspeed.tick();
-    
+
     var throttle  = Math.min(ap.pid.vspeed.get(), 1);
-    var mix=0.98;
+    var mix=0.2;
     this.throttle = (throttle * (1 - mix)) + (this.throttle * mix);
     this.vector   = clamp(-1.00, ap.pid.aspeed.get() * crange(0, this.throttle, 1, 60, 12), 1.00);
 
@@ -469,7 +468,7 @@ var Craft=function(options) {
   this.updateThrust=function() {
     // MAIN ENGINES
     this.engine_number=clamp(1,this.engine_number,this.max_engines);
-    
+
     // VECTOR
     this.vector=clamp(-1,this.vector,1);
 
@@ -490,13 +489,13 @@ var Craft=function(options) {
       this.rocket_body.toWorldFrame(point,[0,-22]);
       this.rocket_body.applyForce(force,point);
     }
-    var mix=0.6;
+    var mix=0.3;
     this.thrust=thrust*(1-mix)+this.thrust*mix;
-    mix=0.2;
+    mix=0.1;
     this.thrust_vector=this.vector*(1-mix)+this.thrust_vector*mix;
 
     // RCS
-    
+
     if(!this.rcs_enabled) {
       this.rcs_force=0;
       return;
@@ -575,7 +574,8 @@ function craft_init() {
 }
 
 function craft_update() {
-  prop.craft.update();
+  if(!prop.paused)
+    prop.craft.update();
   $("#touch-buttons div").removeClass("active");
   if(prop.craft.engine_number == 1) $("#1-engine").addClass("active");
   if(prop.craft.engine_number == 3) $("#3-engine").addClass("active");

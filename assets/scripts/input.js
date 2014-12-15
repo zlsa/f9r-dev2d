@@ -96,7 +96,7 @@ function input_done() {
     prop.input.touch.throttle=crange(0,prop.input.touch.start[1]-position[1],smallest,0,1);
     if(prop.input.touch.start[1]-position[1] > smallest/2 && prop.craft.clamped) prop.craft.unclamp();
     if(prop.input.touch.start[1]-position[1] < -smallest/2 && prop.craft.gear_animation.animating == false) prop.craft.toggleGear();
-    
+
     prop.input.touch.vector=crange(-smallest/2,prop.canvas.size.width/2-position[0],smallest/2,1,-1);
 
     prop.craft.throttle=prop.input.touch.throttle;
@@ -124,17 +124,15 @@ function input_keyup(keycode) {
 
   if(keycode == prop.input.keysym["space"]) {
     prop.craft.unclamp();
-  }
-  if(keycode == prop.input.keysym["q"]) {
+  } else if(keycode == prop.input.keysym["p"]) {
+    prop.paused = !prop.paused;
+  } else if(keycode == prop.input.keysym["q"]) {
     prop.craft.rcs_enabled = !prop.craft.rcs_enabled;
-  }
-  if(keycode == prop.input.keysym["r"]) {
+  } else if(keycode == prop.input.keysym["r"]) {
     prop.craft.reset();
-  }
-  if(keycode == prop.input.keysym["g"]) {
+  } else if(keycode == prop.input.keysym["g"]) {
     prop.craft.toggleGear();
-  }
-  if(keycode == prop.input.keysym["1"]) {
+  } else if(keycode == prop.input.keysym["1"]) {
     prop.craft.engine_number=1;
   } else if(keycode == prop.input.keysym["2"]) {
     if(prop.input.two) prop.craft.engine_number=2;

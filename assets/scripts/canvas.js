@@ -12,7 +12,7 @@ function canvas_init_pre() {
   prop.canvas.images.logo_fuel.src="assets/images/logo-fuel.png";
   prop.canvas.images.smoke=new Image();
   prop.canvas.images.smoke.src="assets/images/smoke.png";
-  
+
   prop.canvas.particles=new Particles({
     lifetime: 6,
     damping: 0.8,
@@ -130,7 +130,7 @@ function canvas_draw_pad(cc,pad) {
 }
 
 function canvas_draw_pads(cc) {
-  
+
   for(var i=0;i<prop.ground.pads.length;i++) {
     var pad=prop.ground.pads[i];
     cc.save();
@@ -447,7 +447,7 @@ function canvas_draw_craft(cc) {
   cc.translate(0,-leg_length/2);
   cc.moveTo(0,0);
   cc.lineTo(-sin(leg_extend_angle)*ll,-cos(leg_extend_angle)*ll+m_to_pixel(3));
-  
+
   cc.restore();
 
   cc.save();
@@ -455,7 +455,7 @@ function canvas_draw_craft(cc) {
   cc.translate(0,-leg_length/2);
   cc.moveTo(0,0);
   cc.lineTo(sin(leg_extend_angle)*ll,-cos(leg_extend_angle)*ll+m_to_pixel(3));
-  
+
   cc.restore();
 
   cc.strokeStyle="#222";
@@ -465,7 +465,7 @@ function canvas_draw_craft(cc) {
   cc.restore();
 
   cc.beginPath();
-  
+
   cc.save()
   cc.translate(-w/2+leg_skew/1.5,h/2-4);
   cc.rotate(-leg_extend_angle);
@@ -478,7 +478,7 @@ function canvas_draw_craft(cc) {
   cc.lineTo(leg_tip_width/2,-leg_length);
   cc.lineTo(leg_base_width/3+leg_skew,leg_base_width/2);
   cc.restore();
-  
+
   cc.save()
   cc.scale(-1,1);
   cc.translate(-w/2+leg_skew/1.5,h/2-4);
@@ -492,7 +492,7 @@ function canvas_draw_craft(cc) {
   cc.lineTo(leg_tip_width/2,-leg_length);
   cc.lineTo(leg_base_width/3+leg_skew,leg_base_width/2);
   cc.restore();
-  
+
   cc.lineWidth=1;
   cc.fillStyle="#fff";
   cc.fill();
@@ -553,7 +553,7 @@ function canvas_draw_hud(cc) {
     n="0000"+n;
     return n.substr(n.length-a,a);
   }
-  
+
   var met={}
   met.seconds=fx(prop.craft.getMissionTime()%60);
   met.minutes=fx((prop.craft.getMissionTime()/60)%60);
@@ -585,7 +585,7 @@ function canvas_draw_minimap(cc) {
   if(!prop.ui.minimap.enabled) return;
 
   cc.save();
-  
+
   cc.globalAlpha=0.1;
 
   if(prop.ui.minimap.show) cc.globalAlpha*=6;
@@ -644,9 +644,9 @@ function canvas_draw_minimap(cc) {
   cc.moveTo(0,0);
   var l=m_to_pixel(40)*factor;
   var angle=prop.craft.angle;
-  
+
   cc.lineTo(sin(angle)*l,-cos(angle)*l);
-  
+
   cc.lineWidth=4;
   cc.lineCap="round";
   cc.strokeStyle="#fff";

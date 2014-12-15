@@ -1,7 +1,7 @@
 
 function ui_init_pre() {
   prop.ui={};
-  
+
   prop.ui.minimap={};
 
   prop.ui.minimap.enabled=true;
