@@ -162,6 +162,8 @@ function canvas_draw_pads(cc) {
 // craft
 
 function canvas_draw_craft(cc) {
+
+  cc.save();
   cc.fillStyle="#fff";
 
   var logo=true;
@@ -504,6 +506,52 @@ function canvas_draw_craft(cc) {
   }
   cc.strokeStyle="#222";
 
+  cc.stroke();
+
+  cc.restore();
+
+  // velocity vector
+  
+  cc.translate(prop.canvas.size.width/2,prop.canvas.size.height/2);
+
+  cc.beginPath();
+  var s = 1.5;
+  var p = [-prop.craft.velocity[0] * s, -prop.craft.velocity[1] * s];
+  var l = distance([0, 0], prop.craft.velocity) * s;
+  var angle = Math.atan2(-p[0], p[1]);
+  var dot_radius = 4;
+  var hair_length = 5;
+  
+  cc.arc(p[0], p[1], dot_radius, 0, Math.PI * 2);
+
+  cc.translate(p[0], p[1]);
+
+  if(p[1] < 0) {
+    cc.moveTo(0, -dot_radius);
+    cc.lineTo(0, -dot_radius - hair_length);
+  } else {
+    cc.moveTo(0, dot_radius);
+    cc.lineTo(0, dot_radius + hair_length);
+  }
+  
+  cc.moveTo(-dot_radius, 0);
+  cc.lineTo(-dot_radius - hair_length, 0);
+  cc.moveTo(dot_radius, 0);
+  cc.lineTo(dot_radius + hair_length, 0);
+  cc.translate(-p[0], -p[1]);
+
+  cc.rotate(angle);
+  cc.moveTo(0, 0);
+  cc.lineTo(0, l - dot_radius);
+  
+  cc.globalAlpha = crange(1, l / s, 8, 0, 0.7);
+  
+  cc.strokeStyle = "#fff";
+  cc.lineWidth = 6;
+  cc.stroke();
+  
+  cc.strokeStyle = "#3d6";
+  cc.lineWidth = 3;
   cc.stroke();
 
 }

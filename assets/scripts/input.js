@@ -161,6 +161,10 @@ function input_update_pre() {
     prop.craft.throttle=0;
   }
 
+  if(prop.input.keys[prop.input.keysym.z]) {
+    prop.craft.throttle=1;
+  }
+
   if(prop.input.keys[prop.input.keysym.j]) {
 //    prop.craft.autopilot.enabled=true;
   } else {

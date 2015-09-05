@@ -535,7 +535,6 @@ var Craft=function(options) {
         this.crash_time=time();
       }
     }
-    this.velocity = this.rocket_body.velocity;
   }
 
   this.update=function() {
@@ -557,6 +556,8 @@ var Craft=function(options) {
     this.updateMass();
     this.updateThrust();
     this.updateLocal();
+    
+    this.velocity = this.rocket_body.velocity;
 
     if(this.landed || this.crashed || this.clamped) this.stopMission();
     else if(!this.landed && !this.crashed && !this.clamped) this.startMission();
