@@ -368,7 +368,7 @@ var Craft=function(options) {
 
     var suicide = false;
 
-    var alt = 300;
+    var alt = 1000;
 
     if(this.scenario == "f9r-dev1-triple-engine") {
       alt = 4000;
@@ -379,11 +379,9 @@ var Craft=function(options) {
 
     if(this.getAltitude() > alt) {
       ap.climbed = true;
-      suicide = true;
     }
 
     if(this.getVspeed() < -1) {
-      suicide = true;
       ap.climbed = true;
     }
     
@@ -395,7 +393,7 @@ var Craft=function(options) {
     ap.target_altitude = alt + 5;
     
     if(ap.climbed) {
-      ap.target_altitude  = 1;
+      ap.target_altitude = 1;
     }
 
     if(!ap.enabled) {

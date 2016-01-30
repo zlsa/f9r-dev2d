@@ -57,8 +57,6 @@ var Autopilot = function(craft) {
       this.start_time_at = hit_time;
     }
 
-    console.log('foo');
-
     this.craft.throttle = 0;
 
     if(this.started && !this.landed) {
