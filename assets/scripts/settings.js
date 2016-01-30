@@ -78,6 +78,9 @@ function settings_init_post() {
   setting_add(["f9r rtls","after boostback completed (experts only)"],"button",null,function() {
     craft_reset("f9r-rtls");
   });
+  setting_add(["f9r rtls extreme","high lateral offset"],"button",null,function() {
+    craft_reset("f9r-rtls-extreme");
+  });
   setting_add(["flip left-right","flip the engine vector direction"],"bool",true,function() {
     if(this.value) {
       prop.input.vector_flip=true;
