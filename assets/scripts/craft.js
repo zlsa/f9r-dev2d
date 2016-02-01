@@ -69,29 +69,29 @@ var Craft=function(options) {
       model:"f9r-dev-high"
     },
     "f9r-rtls": {
-      position: [-150, 5000],
-      velocity: [25,-240],
+      position: [-275, 5000],
+      velocity: [15,-240],
       engine_number: 1,
       ballast: 0,
       max_engines: 1,
       angle: radians(7),
       angular_velocity: radians(-0.3),
       rcs_fuel:300,
-      fuel: 2300,
+      fuel: 3500,
       gear_down:false,
       clamp:false,
       model:"f9r"
     },
     "f9r-rtls-extreme": {
-      position: [-400, 7000],
-      velocity: [28,-350],
+      position: [-1400, 12000],
+      velocity: [70,-220],
       engine_number: 1,
       ballast: 0,
       max_engines: 1,
       angle: radians(8),
       angular_velocity: radians(-0.3),
       rcs_fuel:300,
-      fuel: 2300,
+      fuel: 4000,
       gear_down:false,
       clamp:false,
       model:"f9r"
@@ -413,7 +413,7 @@ var Craft=function(options) {
 
     twr = ((this.thrust_peak[1] * this.engine_number * 10) / (this.mass+this.fuel));
 
-    if(!this.gear_down && this.getVspeed() < -1 && this.getAltitude(6) < 50 && this.scenario != 'f9r-rtls')
+    if(!this.gear_down && this.getVspeed() < -1 && this.getAltitude(6) < 50 && !suicide)
       this.lowerGear();
 
     if(this.clamped && this.thrust > (this.thrust_peak[0] * 0.9 * this.engine_number))
@@ -429,12 +429,13 @@ var Craft=function(options) {
 
     var target_hspeed = crange(-200, (-this.pos[0]) - ap.target_range, 200, -10, 10);
     target_hspeed    += crange( -80, (-this.pos[0]) - ap.target_range,  80,  -5,  5);
+    target_hspeed    += crange(-5000, (-this.pos[0]) - ap.target_range, 5000,  -50,  50);
     target_hspeed    *= crange(1, this.engine_number,   9, 1, 0.8);
-    target_hspeed    *= crange(10, this.getAltitude(), 60, 0, 1);
+    target_hspeed    *= crange(5, this.getAltitude(), 20, 0, 1);
 
     if(suicide) {
-      target_hspeed *= 1.2;
-      target_hspeed = crange(150, this.getAltitude(), 300, this.rocket_body.velocity[0] * 0.1, target_hspeed);
+      target_hspeed *= crange(500, this.getAltitude(), 3000, 1.1, 1);
+      target_hspeed = crange(100, this.getAltitude(), 500, 0, target_hspeed);
     }
     
     ap.target_hspeed  = target_hspeed;
@@ -455,8 +456,7 @@ var Craft=function(options) {
     target_angle      = clamp(-radians(30), target_angle, radians(30));
 
     if(suicide) {
-      target_angle = crange(30, this.getAltitude(), 100, 0, target_angle);
-      target_angle *= 1.5;
+      target_angle = crange(100, this.getAltitude(), 150, 0, target_angle);
     }
 
     if(this.throttle < 0.01) {
@@ -473,8 +473,8 @@ var Craft=function(options) {
     var target_angvel = trange(-radians(10), angle_difference(angle, target_angle), radians(10), radians(0.4), -radians(0.4));
 
     if(suicide) {
-      target_angvel *= 3;
-      target_angvel *= crange(30, this.getAltitude(), 100, 5, 1);
+      target_angvel *= 2;
+      target_angvel *= crange(30, this.getAltitude(), 700, 1.3, 1);
     }
 
     target_angvel    *= crange(5, this.getAltitude(),  50, 30, 10);

@@ -21,7 +21,7 @@ var Autopilot = function(craft) {
     this.landed = false;
     this.down = false;
     
-    this.pid = new PID(1.00, 0.05, 0);
+    this.pid = new PID(0.50, 0.3, 0);
   }
 
   this.get_suicide_alt = function(alt, vspeed, twr) {
@@ -49,7 +49,7 @@ var Autopilot = function(craft) {
     var hit_time = Math.abs(this.craft.getAltitude() / this.craft.getVspeed());
     var suicide_time = Math.abs(this.craft.getVspeed() / ((twr - 1) * 9.81));
     
-    var suicide_alt = this.get_suicide_alt(this.craft.getAltitude() - 1.5 - this.target_altitude, this.craft.getVspeed(), crange(0, 0.5, 1, 0.7, 1) * twr);
+    var suicide_alt = this.get_suicide_alt(this.craft.getAltitude() - 0.2 - this.target_altitude, this.craft.getVspeed(), crange(0, 0.5, 1, 0.7, 1) * twr);
 
     if(suicide_alt < 0 && !this.started) {
       this.started = true;
@@ -65,7 +65,7 @@ var Autopilot = function(craft) {
       this.pid.input  = suicide_alt;
       this.pid.tick();
       
-      this.craft.throttle = crange(-1, this.pid.get(), 1, 0.015, 1);
+      this.craft.throttle = crange(-5, this.pid.get(), 5, 0.015, 1);
       //      this.craft.throttle = clamp(0.7, this.craft.throttle, 1);
 
       if(hit_time < 1 && !this.down) {
@@ -74,7 +74,7 @@ var Autopilot = function(craft) {
       }
     }
 
-    if(this.craft.getVspeed() > -0.01) {
+    if(this.craft.getVspeed() > -0.5) {
       this.landed = true;
       this.craft.throttle = 0;
     }
